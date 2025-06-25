@@ -11,7 +11,7 @@ deploy:
         repo: https://charts.bitnami.com/bitnami
         version: 11.9.8
         valuesFiles:
-          - ./postgresql.yaml
+          - ./values/postgresql.yaml
 
 #      - name: dhis2-minio
 #        namespace: dhis2
@@ -21,17 +21,24 @@ deploy:
 #        version: 14.7.5
 #        useHelmSecrets: true
 #        valuesFiles:
-#          - ./minio.yaml
+#          - ./values/minio.yaml
 
       - name: dhis2-core
         namespace: dhis2
         createNamespace: true
         chartPath: charts/core
         valuesFiles:
-          - ./dhis2.yaml
+          - ./values/dhis2.yaml
         setValueTemplates:
           ingress:
             enabled: true
             hostname: dhis2.dev.im.dhis2.org
-            path: /
+            path: /tons
             certIssuer: cert-issuer-prod
+          environment:
+            SERVER_SERVLET_CONTEXT_PATH: /tons
+          image:
+            repository: dhis2/core-pr
+            tag: 20982-3
+          storage:
+            className: gp2
