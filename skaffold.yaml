@@ -35,10 +35,16 @@ deploy:
             hostname: dhis2.dev.im.dhis2.org
             path: /tons
             certIssuer: cert-issuer-prod
+          startupProbe:
+            path: /tons
+          livenessProbe:
+            path: /tons
+          readinessProbe:
+            path: /tons
           environment:
             SERVER_SERVLET_CONTEXT_PATH: /tons
           image:
             repository: dhis2/core-pr
-            tag: 20982-3
+            tag: 20981-1
           storage:
             className: gp2

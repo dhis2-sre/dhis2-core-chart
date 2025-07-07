@@ -21,6 +21,8 @@ dhisConfig: |
   connection.password = dhis
   # Server base URL
   server.base.url = https://dhis2-core.127.0.0.1.nip.io/
+  server.https = true
+  session.cookie.samesite = None
 
 ## If MinIO or S3 is configured, then the following configuration is ignored and no pvc will be created
 storage:
