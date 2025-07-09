@@ -63,6 +63,9 @@ serverXml: config/server.xml
 catalinaOpts: "-Dcontext.path='' -Dcontext.sameSiteCookies='lax'"
 javaOpts: ""
 
+# Use this when setting the context path for Embedded Tomcat
+contextPath: /
+
 minReadySeconds: 120
 startupProbe: # 2min10s (26 * 5 = 130s)
   failureThreshold: 26
@@ -86,7 +89,7 @@ image:
   repository: dhis2/core
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: 42
+  tag: 2.42
 
 imagePullSecrets: []
 nameOverride: ""

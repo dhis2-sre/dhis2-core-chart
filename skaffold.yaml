@@ -41,7 +41,6 @@ deploy:
             path: /core
           readinessProbe:
             path: /core
-          environment:
-            SERVER_SERVLET_CONTEXT_PATH: /core
+          contextPath: /core
           storage:
             className: gp2
