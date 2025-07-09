@@ -68,6 +68,13 @@ spec:
               value: "-Dlog4j2.configurationFile={{ .Values.dhis2Home }}/log4j2.xml {{ .Values.javaOpts }}"
             - name: DHIS2_HOME
               value: {{ .Values.dhis2Home }}
+            - name: SERVER_SERVLET_CONTEXT_PATH
+              value: {{ .Values.contextPath }}
+{{- if index .Values "environment" }}
+          envFrom:
+            - secretRef:
+                name: {{ include "dhis2-core-helm.fullname" . }}
+{{- end }}
           ports:
             - name: http
               containerPort: 8080

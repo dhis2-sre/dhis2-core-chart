@@ -3,6 +3,9 @@
 # Declare variables to be passed into your templates.
 commonLabels: {}
 
+environment: {}
+#  VARIABLE: value
+
 googleAuth:
   projectId: ""
   privateKeyId: ""
@@ -18,6 +21,8 @@ dhisConfig: |
   connection.password = dhis
   # Server base URL
   server.base.url = https://dhis2-core.127.0.0.1.nip.io/
+  server.https = true
+  session.cookie.samesite = None
 
 ## If MinIO or S3 is configured, then the following configuration is ignored and no pvc will be created
 storage:
@@ -58,6 +63,9 @@ serverXml: config/server.xml
 catalinaOpts: "-Dcontext.path='' -Dcontext.sameSiteCookies='lax'"
 javaOpts: ""
 
+# Use this when setting the context path for Embedded Tomcat
+contextPath: /
+
 minReadySeconds: 120
 startupProbe: # 2min10s (26 * 5 = 130s)
   failureThreshold: 26
@@ -81,7 +89,7 @@ image:
   repository: dhis2/core
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: 41
+  tag: 2.42
 
 imagePullSecrets: []
 nameOverride: ""
@@ -104,13 +112,14 @@ podSecurityContext: {}
   # fsGroup: 2000
 
 securityContext:
+   allowPrivilegeEscalation: false
    capabilities:
      drop:
      - ALL
    readOnlyRootFilesystem: false # To be changed once dhis2-core and Tomcat are configured to log to stdout without needing write access.
    runAsNonRoot: true
-   runAsUser: 65534
-   runAsGroup: 65534
+   runAsUser: 65532
+   runAsGroup: 65532
 
 service:
   type: ClusterIP
