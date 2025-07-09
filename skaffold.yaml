@@ -33,18 +33,15 @@ deploy:
           ingress:
             enabled: true
             hostname: dhis2.dev.im.dhis2.org
-            path: /tons
+            path: /core
             certIssuer: cert-issuer-prod
           startupProbe:
-            path: /tons
+            path: /core
           livenessProbe:
-            path: /tons
+            path: /core
           readinessProbe:
-            path: /tons
+            path: /core
           environment:
-            SERVER_SERVLET_CONTEXT_PATH: /tons
-          image:
-            repository: dhis2/core-pr
-            tag: 20981-1
+            SERVER_SERVLET_CONTEXT_PATH: /core
           storage:
             className: gp2
