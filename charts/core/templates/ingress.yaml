@@ -23,6 +23,7 @@ spec:
       hosts:
         - {{ .Values.ingress.hostname | quote }}
   {{- end }}
+  ingressClassName: {{ .Values.ingress.className }}
   rules:
     - host: {{ .Values.ingress.hostname | quote }}
       http:
