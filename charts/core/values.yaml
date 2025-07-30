@@ -3,9 +3,6 @@
 # Declare variables to be passed into your templates.
 commonLabels: {}
 
-environment: {}
-#  VARIABLE: value
-
 googleAuth:
   projectId: ""
   privateKeyId: ""
@@ -13,16 +10,16 @@ googleAuth:
   clientEmail: ""
   clientId: ""
 
-dhisConfig: |
-  connection.dialect = org.hibernate.dialect.PostgreSQLDialect
-  connection.driver_class = org.postgresql.Driver
-  connection.url = jdbc:postgresql://dhis2-postgresql.dhis2.svc/dhis2
-  connection.username = dhis
-  connection.password = dhis
-  # Server base URL
-  server.base.url = https://dhis2-core.127.0.0.1.nip.io/
-  server.https = true
-  session.cookie.samesite = None
+database:
+  username: dhis
+  password: dhis
+  database: dhis2
+  hostname: dhis2-postgresql.dhis2.svc
+
+sessionCookieSameSite: Lax
+
+#customConfigSnippet: |
+#  custom = property
 
 ## If MinIO or S3 is configured, then the following configuration is ignored and no pvc will be created
 storage:
@@ -30,15 +27,15 @@ storage:
   className: ~
 
 ## minIOConfig and S3Config are mutually exclusive, so make sure to only set one of them
-#minIOConfig: |
-#  filestore.provider = s3
-#  filestore.container = dhis2
-#  filestore.endpoint = http://minio.dhis2.svc:9000
-#  filestore.location = eu-west-1
-#  filestore.identity = dhisdhis
-#  filestore.secret = dhisdhis
+#minIO:
+#  provider: s3
+#  container: dhis2
+#  endpoint: http://minio.dhis2.svc:9000
+#  location: eu-west-1
+#  identity: dhisdhis
+#  secret: dhisdhis
 
-#S3Config: |
+#S3:
 #  filestore.provider = aws-s3
 #  filestore.container = dhis2
 #  filestore.location = eu-west-1
@@ -111,15 +108,15 @@ podLabels: {}
 podSecurityContext: {}
   # fsGroup: 2000
 
-securityContext: {}
-#   allowPrivilegeEscalation: false
-#   capabilities:
-#     drop:
-#     - ALL
-#   readOnlyRootFilesystem: false # To be changed once dhis2-core and Tomcat are configured to log to stdout without needing write access.
-#   runAsNonRoot: true
-#   runAsUser: 65532
-#   runAsGroup: 65532
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: false
+  runAsNonRoot: true
+  runAsUser: 65534
+  runAsGroup: 65534
 
 service:
   type: ClusterIP
