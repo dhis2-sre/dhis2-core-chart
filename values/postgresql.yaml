@@ -1,7 +1,7 @@
 image:
   repository: dhis2/postgresql-curl
   pullPolicy: IfNotPresent
-  tag: 13
+  tag: 17
 
 primary:
   initdb:
