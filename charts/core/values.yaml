@@ -36,11 +36,11 @@ storage:
 #  secret: dhisdhis
 
 #S3:
-#  filestore.provider = aws-s3
-#  filestore.container = dhis2
-#  filestore.location = eu-west-1
-#  filestore.identity = dhisdhis
-#  filestore.secret = dhisdhis
+#  provider: aws-s3
+#  container: dhis2
+#  location: eu-west-1
+#  identity: dhisdhis
+#  secret: dhisdhis
 
 ## Init containers
 initContainers: []
