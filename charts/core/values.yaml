@@ -3,9 +3,6 @@
 # Declare variables to be passed into your templates.
 commonLabels: {}
 
-environment: {}
-#  VARIABLE: value
-
 googleAuth:
   projectId: ""
   privateKeyId: ""
@@ -13,16 +10,16 @@ googleAuth:
   clientEmail: ""
   clientId: ""
 
-dhisConfig: |
-  connection.dialect = org.hibernate.dialect.PostgreSQLDialect
-  connection.driver_class = org.postgresql.Driver
-  connection.url = jdbc:postgresql://dhis2-postgresql.dhis2.svc/dhis2
-  connection.username = dhis
-  connection.password = dhis
-  # Server base URL
-  server.base.url = https://dhis2-core.127.0.0.1.nip.io/
-  server.https = true
-  session.cookie.samesite = None
+database:
+  username: dhis
+  password: dhis
+  database: dhis2
+  hostname: dhis2-postgresql.dhis2.svc
+
+sessionCookieSameSite: Lax
+
+#customConfigSnippet: |
+#  custom = property
 
 ## If MinIO or S3 is configured, then the following configuration is ignored and no pvc will be created
 storage:
@@ -30,20 +27,20 @@ storage:
   className: ~
 
 ## minIOConfig and S3Config are mutually exclusive, so make sure to only set one of them
-#minIOConfig: |
-#  filestore.provider = s3
-#  filestore.container = dhis2
-#  filestore.endpoint = http://minio.dhis2.svc:9000
-#  filestore.location = eu-west-1
-#  filestore.identity = dhisdhis
-#  filestore.secret = dhisdhis
+#minIO:
+#  provider: s3
+#  container: dhis2
+#  endpoint: http://minio.dhis2.svc:9000
+#  location: eu-west-1
+#  identity: dhisdhis
+#  secret: dhisdhis
 
-#S3Config: |
-#  filestore.provider = aws-s3
-#  filestore.container = dhis2
-#  filestore.location = eu-west-1
-#  filestore.identity = dhisdhis
-#  filestore.secret = dhisdhis
+#S3:
+#  provider: aws-s3
+#  container: dhis2
+#  location: eu-west-1
+#  identity: dhisdhis
+#  secret: dhisdhis
 
 ## Init containers
 initContainers: []
