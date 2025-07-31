@@ -11,7 +11,7 @@ data:
    {{- end }}
     connection.dialect = org.hibernate.dialect.PostgreSQLDialect
     connection.driver_class = org.postgresql.Driver
-    connection.url = jdbc:postgresql://${DB_HOSTNAME}/${DB_NAME}
+    connection.url = jdbc:postgresql://${DB_HOSTNAME}/${DB_DATABASE}
     connection.username = ${DB_USERNAME}
     connection.password = ${DB_PASSWORD}
     {{- if .Values.ingress.enabled }}
