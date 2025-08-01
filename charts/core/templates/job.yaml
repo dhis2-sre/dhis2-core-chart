@@ -1,0 +1,36 @@
+{{- if .Values.jobs.generateAnalytics.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ include "dhis2-core-helm.fullname" . }}-generate-analytics"
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "0"
+    #"helm.sh/hook-delete-policy": hook-succeeded,hook-failed
+spec:
+  ttlSecondsAfterFinished: 3600
+  template:
+    spec:
+      containers:
+        - name: {{ include "dhis2-core-helm.fullname" . }}-generate-analytics-job
+          image: curlimages/curl:latest
+          env:
+            - name: SERVICE_URL
+              value: "http://{{ include "dhis2-core-helm.fullname" . }}:{{ .Values.service.port }}{{ .Values.ingress.path }}"
+            - name: USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "dhis2-core-helm.fullname" . }}
+                  key: USERNAME
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "dhis2-core-helm.fullname" . }}
+                  key: PASSWORD
+          command:
+            - /bin/sh
+            - -c
+            - |
+              {{- .Files.Get "scripts/generate-analytics.sh" | nindent 15 }}
+      restartPolicy: OnFailure
+{{- end }}

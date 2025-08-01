@@ -3,6 +3,12 @@
 # Declare variables to be passed into your templates.
 commonLabels: {}
 
+jobs:
+  generateAnalytics:
+    enabled: false
+    username: admin
+    password: district
+
 googleAuth:
   projectId: ""
   privateKeyId: ""
