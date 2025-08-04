@@ -41,12 +41,12 @@ spec:
       serviceAccountName: {{ include "dhis2-core-helm.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      {{- if or (not (or (hasKey .Values "minIOConfig") (hasKey .Values "S3Config"))) .Values.initContainers }}
+      {{- if or (not (or (hasKey .Values "minIO") (hasKey .Values "S3"))) .Values.initContainers }}
       initContainers:
       {{- with .Values.initContainers }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if not (or (hasKey .Values "minIOConfig") (hasKey .Values "S3Config")) }}
+      {{- if not (or (hasKey .Values "minIO") (hasKey .Values "S3")) }}
         - name: dhis2-home-permissions
           image: busybox
           command: [ 'sh', '-c', 'mkdir -p {{ .Values.dhis2Home }} && chown {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsGroup }} {{ .Values.dhis2Home }} && chmod u+rw,go-rwx {{ .Values.dhis2Home }} && mkdir -p {{ .Values.dhis2Home }}/files && chown -R {{ .Values.securityContext.runAsUser }}:{{ .Values.securityContext.runAsGroup }} {{ .Values.dhis2Home }}/files && chmod -R u+rw,go-rwx {{ .Values.dhis2Home }}/files' ]
@@ -93,7 +93,7 @@ spec:
               path: {{ .Values.readinessProbe.path }}
               port: http
           volumeMounts:
-{{- if not (or (hasKey .Values "minIOConfig") (hasKey .Values "S3Config")) }}
+{{- if not (or (hasKey .Values "minIO") (hasKey .Values "S3")) }}
             - name: dhis-home
               mountPath: {{ .Values.dhis2Home }}
               readOnly: false
@@ -113,7 +113,7 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
-{{- if not (or (hasKey .Values "minIOConfig") (hasKey .Values "S3Config")) }}
+{{- if not (or (hasKey .Values "minIO") (hasKey .Values "S3")) }}
         - name: dhis-home
           persistentVolumeClaim:
             claimName: {{ include "dhis2-core-helm.fullname" . }}
