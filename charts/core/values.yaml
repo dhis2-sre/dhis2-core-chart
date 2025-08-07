@@ -9,12 +9,12 @@ jobs:
       username: admin
       password: district
   generateAnalytics:
-    enabled: true
+    enabled: false
   enableUsers:
-    enabled: true
+    enabled: false
     targetUser: alinana,arabiceB  # Support multiple users by adding a comma-separated list of usernames
   installApps:
-    enabled: true
+    enabled: false
     apps:
       - name: Capture
         version: 103.2.4
