@@ -42,8 +42,6 @@ deploy:
           readinessProbe:
             path: /core
           contextPath: /core
-          storage:
-            className: gp2
           image:
             repository: dhis2/core-dev
             tag: master

@@ -1,0 +1,118 @@
+{{- if .Values.jobs.generateAnalytics.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ include "dhis2-core-helm.fullname" . }}-generate-analytics"
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "0"
+    #"helm.sh/hook-delete-policy": hook-succeeded,hook-failed
+spec:
+  ttlSecondsAfterFinished: 3600
+  template:
+    spec:
+      containers:
+        - name: {{ include "dhis2-core-helm.fullname" . }}-generate-analytics-job
+          image: curlimages/curl:latest
+          env:
+            - name: SERVICE_URL
+              value: "http://{{ include "dhis2-core-helm.fullname" . }}:{{ .Values.service.port }}{{ .Values.ingress.path }}"
+            - name: USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "dhis2-core-helm.fullname" . }}
+                  key: USERNAME
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "dhis2-core-helm.fullname" . }}
+                  key: PASSWORD
+          command:
+            - /bin/sh
+            - -c
+            - |
+              {{- .Files.Get "scripts/generate-analytics.sh" | nindent 15 }}
+      restartPolicy: OnFailure
+{{- end }}
+
+---
+
+{{- if .Values.jobs.enableUsers.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ include "dhis2-core-helm.fullname" . }}-enable-user"
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "0"
+    #"helm.sh/hook-delete-policy": hook-succeeded,hook-failed
+spec:
+  ttlSecondsAfterFinished: 3600
+  template:
+    spec:
+      containers:
+        - name: {{ include "dhis2-core-helm.fullname" . }}-enable-user-job
+          image: alpine/k8s:1.29.0
+          env:
+            - name: SERVICE_URL
+              value: "http://{{ include "dhis2-core-helm.fullname" . }}:{{ .Values.service.port }}{{ .Values.ingress.path }}"
+            - name: USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "dhis2-core-helm.fullname" . }}
+                  key: USERNAME
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "dhis2-core-helm.fullname" . }}
+                  key: PASSWORD
+            - name: TARGET_USER
+              value: {{ .Values.jobs.enableUsers.targetUser }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              {{- .Files.Get "scripts/enable-users.sh" | nindent 15 }}
+      restartPolicy: OnFailure
+{{- end }}
+
+---
+
+{{- if .Values.jobs.installApps.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ include "dhis2-core-helm.fullname" . }}-install-apps"
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "0"
+    #"helm.sh/hook-delete-policy": hook-succeeded,hook-failed
+spec:
+  ttlSecondsAfterFinished: 3600
+  template:
+    spec:
+      containers:
+        - name: {{ include "dhis2-core-helm.fullname" . }}-install-apps-job
+          image: alpine/k8s:1.29.0
+          env:
+            - name: SERVICE_URL
+              value: "http://{{ include "dhis2-core-helm.fullname" . }}:{{ .Values.service.port }}{{ .Values.ingress.path }}"
+            - name: USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "dhis2-core-helm.fullname" . }}
+                  key: USERNAME
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "dhis2-core-helm.fullname" . }}
+                  key: PASSWORD
+            - name: APPS
+              value: {{ .Values.jobs.installApps.apps | toJson | quote }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              {{- .Files.Get "scripts/install-apps.sh" | nindent 15 }}
+      restartPolicy: OnFailure
+{{- end }}
