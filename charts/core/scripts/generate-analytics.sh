@@ -8,7 +8,7 @@ fi
 
 echo "Waiting for DHIS2 service to be ready... $SERVICE_URL"
 curl --fail --silent --show-error --output /dev/null --retry 100 --retry-delay 6 --retry-connrefused "$SERVICE_URL"
-echo "DHIS2 service is ready."
+echo "DHIS2 is ready!"
 
 curl --fail --silent --show-error --location --user "$USERNAME:$PASSWORD" --request POST $SERVICE_URL/api/resourceTables/analytics
 CURL_EXIT_CODE=$?

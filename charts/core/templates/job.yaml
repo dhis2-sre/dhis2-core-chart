@@ -76,7 +76,6 @@ spec:
       restartPolicy: OnFailure
 {{- end }}
 
-
 ---
 
 {{- if .Values.jobs.installApps.enabled }}
