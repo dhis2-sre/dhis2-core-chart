@@ -13,4 +13,4 @@ if [ $CURL_EXIT_CODE -ne 0 ]; then
   exit $CURL_EXIT_CODE
 fi
 
-echo "Analytics job completed successfully"
+echo "Analytics job successfully triggered"
