@@ -4,10 +4,28 @@
 commonLabels: {}
 
 jobs:
+  authentication:
+    dhis2:
+      username: admin
+      password: district
   generateAnalytics:
-    enabled: false
-    username: admin
-    password: district
+    enabled: true
+  enableUsers:
+    enabled: true
+    targetUser: alinana,arabiceB  # Support multiple users by adding a comma-separated list of usernames
+  installApps:
+    enabled: true
+    apps:
+      - name: Capture
+        version: 103.2.4
+      - name: Maps
+        version: latest
+      - name: Microplanning
+        version: 1.0.6
+      - name: No App Here
+        version: 1.0.0
+      - name: ADEx Flow
+        version: 0.1.7-nonexistent
 
 googleAuth:
   projectId: ""

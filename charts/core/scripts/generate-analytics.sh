@@ -1,9 +1,14 @@
 #!/usr/bin/env sh
+set -eo pipefail
 
-until curl --connect-timeout 5 --silent --output /dev/null --fail $SERVICE_URL; do
-  echo "Waiting for DHIS2 service to be ready... $SERVICE_URL"
-  sleep 5
-done
+if [ -z "$SERVICE_URL" ] || [ -z "$USERNAME" ] || [ -z "$PASSWORD" ]; then
+  echo "Error: Required environment variables are not set. Please set SERVICE_URL, USERNAME, and PASSWORD."
+  exit 1
+fi
+
+echo "Waiting for DHIS2 service to be ready... $SERVICE_URL"
+curl --fail --silent --show-error --output /dev/null --retry 100 --retry-delay 6 --retry-connrefused "$SERVICE_URL"
+echo "DHIS2 service is ready."
 
 curl --fail --silent --show-error --location --user "$USERNAME:$PASSWORD" --request POST $SERVICE_URL/api/resourceTables/analytics
 CURL_EXIT_CODE=$?
