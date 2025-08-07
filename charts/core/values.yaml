@@ -17,15 +17,11 @@ jobs:
     enabled: false
     apps:
       - name: Capture
-        version: 103.2.4
-      - name: Maps
+        version: latest # A specific version such as "103.2.4" can also be used
+      - name: Dashboard
         version: latest
-      - name: Microplanning
-        version: 1.0.6
-      - name: No App Here
-        version: 1.0.0
-      - name: ADEx Flow
-        version: 0.1.7-nonexistent
+#      - name: Microplanning
+#        version: latest
 
 googleAuth:
   projectId: ""
