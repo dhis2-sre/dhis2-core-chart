@@ -63,7 +63,7 @@ sessionCookieSameSite: Lax
 #customConfigSnippet: |
 #  custom = property
 
-# Storage settings.
+# -- If MinIO or S3 is configured, then the following configuration is ignored and no pvc will be created
 storage:
   # -- Size of the Persistent Volume Claim, e.g., 8Gi for 8 gigabytes.
   volumeSize: 8Gi
@@ -119,7 +119,7 @@ serverXml: config/server.xml
 # -- Additional options for JVM.catalinaOpts: "-Dcontext.path='' -Dcontext.sameSiteCookies='lax'"
 javaOpts: ""
 
-# -- Context path settings for Embedded Tomcat (optional).
+# -- Context path settings for Embedded Tomcat
 contextPath: /
 
 # -- Minimum number of seconds for the pod to be ready before being considered available.
@@ -159,7 +159,7 @@ image:
   repository: dhis2/core
   # -- Image pull policy.
   pullPolicy: IfNotPresent
-  # -- Image tag.
+  # -- Overrides the image tag whose default is the chart appVersion.
   tag: 2.42
 
 # -- List of secrets to use for pulling images from private registries.
@@ -175,17 +175,32 @@ serviceAccount:
   create: true
   # -- Additional annotations for the service account.
   annotations: {}
-  # -- Name of an existing service account to use.
+  # -- Name of an existing service account to use. If not set and create is true, a name is generated using the fullname template
   name: ""
 
 # -- Annotations applied to all pods deployed by this chart.
 podAnnotations: {}
+
 # -- Labels applied to all pods deployed by this chart.
 podLabels: {}
+
 # -- Security context settings for pods (e.g., fsGroup).
 podSecurityContext: {}
-# -- Security context settings for containers (e.g., allowPrivilegeEscalation).
-securityContext: {}
+
+securityContext:
+  # -- Whether to allow privilege escalation
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  # -- Don't change this. DHIS2 currently doesn't support read-only filesystem since it requires write access to its home directory
+  readOnlyRootFilesystem: false
+  # -- Enforce application running as a non-privileged user
+  runAsNonRoot: true
+  # -- 65534 is commonly used as a non-root user, and it corresponds to the nobody user in the distroless image which is used for DHIS2 builds after 2.42. Before 2.42, the user id 65532 is used
+  runAsUser: 65534
+  # -- See `securityContext.runAsUser`
+  runAsGroup: 65534
 
 # Service configuration.
 service:
