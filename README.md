@@ -1,5 +1,9 @@
 # DHIS2 Core Helm Chart
 
+## Documentation
+
+The documentation for the chart properties can be found [here](./charts/core/README.md) and is generated using [helm-docs](https://github.com/norwoodj/helm-docs).
+
 ## Configuration
 
 Ensure the `KUBECONFIG` environment variable is pointing to a valid Kubernetes configuration file.

@@ -1,20 +1,27 @@
-# Default values for dhis2-core-helm.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+# This file contains default configuration settings for deploying a DHIS 2 instance using Helm charts.
+
+# -- Common labels applied to all Kubernetes resources created by this chart.
 commonLabels: {}
 
 jobs:
   authentication:
     dhis2:
+      # -- Default DHIS2 username.
       username: admin
+      # -- Default DHIS2 username.
       password: district
   generateAnalytics:
+    # -- Whether the "Generate Analytics" job is enabled.
     enabled: false
   enableUsers:
+    # -- Whether the "Enable Users" job is enabled.
     enabled: false
-    targetUser: alinana,arabiceB  # Support multiple users by adding a comma-separated list of usernames
+    # -- List of users to target. Support multiple users by adding a comma-separated list of usernames.
+    targetUser: alinana,arabiceB
   installApps:
+    # -- Whether the "Install Apps" job is enabled.
     enabled: false
+    # -- List of applications to install/update
     apps:
       - name: Capture
         version: latest # A specific version such as "103.2.4" can also be used
@@ -23,46 +30,74 @@ jobs:
 #      - name: Microplanning
 #        version: latest
 
+# Configuration related to Google Auth (optional).
 googleAuth:
+  # -- The unique ID of the Google Cloud Project.
   projectId: ""
+  # -- The private key ID used for authentication.
   privateKeyId: ""
-  privateKey: '' # Use single quotes if the string contains \n or other characters which helm shouldn't evaluate
+  # -- The private key in PEM format. Use single quotes if it contains \n or other special characters.
+  privateKey: ''
+  # -- The email address of the service account.
   clientEmail: ""
+  # -- The OAuth 2.0 Client ID.
   clientId: ""
 
+# Database connection settings.
 database:
+  # -- Default database username.
   username: dhis
+  # -- Default database password.
   password: dhis
+  # -- Name of the database to use.
   database: dhis2
+  # -- Hostname or IP address of the PostgreSQL server.
   hostname: dhis2-postgresql.dhis2.svc
 
+# Configuration for session cookies.
+# -- Value can be 'Lax', 'Strict', or 'None'.
 sessionCookieSameSite: Lax
 
+
+# -- Custom configuration snippet (optional).
 #customConfigSnippet: |
 #  custom = property
 
-## If MinIO or S3 is configured, then the following configuration is ignored and no pvc will be created
+# Storage settings.
 storage:
+  # -- Size of the Persistent Volume Claim, e.g., 8Gi for 8 gigabytes.
   volumeSize: 8Gi
+  # -- Name of the storage class.
   className: ~
 
 ## minIOConfig and S3Config are mutually exclusive, so make sure to only set one of them
 #minIO:
+#  # -- Provider type, currently only 's3' is supported.
 #  provider: s3
+#  # -- Container name in the storage service.
 #  container: dhis2
+#  # -- Endpoint URL for the MinIO or S3 server.
 #  endpoint: http://minio.dhis2.svc:9000
+#  # -- AWS region or custom location identifier.
 #  location: eu-west-1
+#  # -- Access key ID or similar credential.
 #  identity: dhisdhis
+#  # -- Secret access key.
 #  secret: dhisdhis
 
 #S3:
+#  # -- Provider type, currently only 'aws-s3' is supported.
 #  provider: aws-s3
+#  # -- Container name in the storage service.
 #  container: dhis2
+#  # -- AWS region or custom location identifier.
 #  location: eu-west-1
+#  # -- Access key ID or similar credential.
 #  identity: dhisdhis
+#  # -- Secret access key.
 #  secret: dhisdhis
 
-## Init containers
+# -- Init containers.
 initContainers: []
 # - name: custom-init
 #   image: busybox
@@ -71,90 +106,111 @@ initContainers: []
 #    - name: dhis-home
 #      mountPath: /dhis-home
 
+# -- DHIS 2 home directory.
 dhis2Home: /opt/dhis2
 
+# -- Path to the log4j2 configuration file.
 log4j2: config/log4j2.xml
 
+# -- Path to the Tomcat server XML configuration file.
 serverXml: config/server.xml
 
-catalinaOpts: "-Dcontext.path='' -Dcontext.sameSiteCookies='lax'"
+# -- Options passed to Java and Tomcat startup scripts.
+# -- Additional options for JVM.catalinaOpts: "-Dcontext.path='' -Dcontext.sameSiteCookies='lax'"
 javaOpts: ""
 
-# Use this when setting the context path for Embedded Tomcat
+# -- Context path settings for Embedded Tomcat (optional).
 contextPath: /
 
+# -- Minimum number of seconds for the pod to be ready before being considered available.
 minReadySeconds: 120
 startupProbe: # 2min10s (26 * 5 = 130s)
+  # -- Maximum number of failures.
   failureThreshold: 26
+  # -- Period between each try
   periodSeconds: 5
+  # -- Path
   path: /
 livenessProbe:
+  # -- Timeout in seconds
   timeoutSeconds: 1
+  # -- Path
   path: /
 readinessProbe:
+  # -- Timeout in seconds
   timeoutSeconds: 1
+  # -- Path
   path: /
 
+# -- Number of replicas (instances) of DHIS 2 to run.
 replicaCount: 1
 
 strategy:
+  # -- Deployment strategy for rolling updates.
   type: RollingUpdate
   rollingUpdate:
+    # -- Maximum surge
     maxSurge: 1
+    # -- Maximum unavailable
     maxUnavailable: 0
 
 image:
+  # -- Docker image repository name.
   repository: dhis2/core
+  # -- Image pull policy.
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
+  # -- Image tag.
   tag: 2.42
 
+# -- List of secrets to use for pulling images from private registries.
 imagePullSecrets: []
+
+# -- Overrides the chart's default name.
 nameOverride: ""
+# -- Overrides the full name of the deployment (including namespace).
 fullnameOverride: ""
 
 serviceAccount:
-  # Specifies whether a service account should be created
+  # -- Whether a service account should be created.
   create: true
-  # Annotations to add to the service account
+  # -- Additional annotations for the service account.
   annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
+  # -- Name of an existing service account to use.
   name: ""
 
+# -- Annotations applied to all pods deployed by this chart.
 podAnnotations: {}
-
+# -- Labels applied to all pods deployed by this chart.
 podLabels: {}
-
+# -- Security context settings for pods (e.g., fsGroup).
 podSecurityContext: {}
-  # fsGroup: 2000
+# -- Security context settings for containers (e.g., allowPrivilegeEscalation).
+securityContext: {}
 
-securityContext:
-  allowPrivilegeEscalation: false
-  capabilities:
-   drop:
-   - ALL
-  readOnlyRootFilesystem: false # To be changed once dhis2-core and Tomcat are configured to log to stdout without needing write access
-  runAsNonRoot: true
-  # 65534 is commonly used as a non-root user, and it corresponds to the nobody user in the distroless image which is used
-  # for DHIS2 builds after 2.42. Before 2.42, the user id 65532 is used
-  runAsUser: 65534
-  runAsGroup: 65534
-
+# Service configuration.
 service:
+  # -- Service type
   type: ClusterIP
+  # -- Service port
   port: 8080
 
 ingress:
+  # -- Whether to enable ingress or not.
   enabled: true
+  # -- Class name
   className: nginx
+  # -- Hostname
   hostname: dhis2-core.127.0.0.1.nip.io
+  # -- Path
   path: /
+  # -- Name of certification issuer
   # certIssuer: letsencrypt-staging | letsencrypt-prod
+  # -- Annotations which should be applied to the ingress resource
   annotations: {}
   # kubernetes.io/ingress.class: nginx
   # kubernetes.io/tls-acme: "true"
 
+# -- Resource requests and limits for containers.
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
@@ -168,14 +224,21 @@ resources: {}
   #   memory: 128Mi
 
 autoscaling:
+  # -- Whether horizontal pod autoscaler is enabled.
   enabled: false
+  # -- Minimum number of replicas for the deployment.
   minReplicas: 1
+  # -- Maximum number of replicas for the deployment.
   maxReplicas: 100
+  # -- Target CPU utilization percentage to scale based on.
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
+# -- Node selector labels that allow pods to be scheduled only onto nodes matching these labels.
 nodeSelector: {}
 
+# -- Tolerations that are added to pods to allow them to schedule onto nodes with certain taints.
 tolerations: []
 
+# -- Affinity rules for pod scheduling, allowing you to define preferred or required co-location of pods.
 affinity: {}
