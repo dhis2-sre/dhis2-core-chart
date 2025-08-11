@@ -3,6 +3,26 @@
 # Declare variables to be passed into your templates.
 commonLabels: {}
 
+jobs:
+  authentication:
+    dhis2:
+      username: admin
+      password: district
+  generateAnalytics:
+    enabled: false
+  enableUsers:
+    enabled: false
+    targetUser: alinana,arabiceB  # Support multiple users by adding a comma-separated list of usernames
+  installApps:
+    enabled: false
+    apps:
+      - name: Capture
+        version: latest # A specific version such as "103.2.4" can also be used
+      - name: Dashboard
+        version: latest
+#      - name: Microplanning
+#        version: latest
+
 googleAuth:
   projectId: ""
   privateKeyId: ""
@@ -109,15 +129,17 @@ podLabels: {}
 podSecurityContext: {}
   # fsGroup: 2000
 
-securityContext: {}
-#   allowPrivilegeEscalation: false
-#   capabilities:
-#     drop:
-#     - ALL
-#   readOnlyRootFilesystem: false # To be changed once dhis2-core and Tomcat are configured to log to stdout without needing write access.
-#   runAsNonRoot: true
-#   runAsUser: 65532
-#   runAsGroup: 65532
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+   drop:
+   - ALL
+  readOnlyRootFilesystem: false # To be changed once dhis2-core and Tomcat are configured to log to stdout without needing write access
+  runAsNonRoot: true
+  # 65534 is commonly used as a non-root user, and it corresponds to the nobody user in the distroless image which is used
+  # for DHIS2 builds after 2.42. Before 2.42, the user id 65532 is used
+  runAsUser: 65534
+  runAsGroup: 65534
 
 service:
   type: ClusterIP
