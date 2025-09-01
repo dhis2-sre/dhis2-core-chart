@@ -1,0 +1,83 @@
+apiVersion: skaffold/v4beta6
+kind: Config
+deploy:
+  statusCheckDeadlineSeconds: 420
+  helm:
+    releases:
+      - name: dhis2-minio-postgresql
+        namespace: dhis2
+        createNamespace: true
+        remoteChart: postgresql
+        repo: https://charts.bitnami.com/bitnami
+        version: 11.9.8
+        valuesFiles:
+          - ./values/postgresql.yaml
+        setValueTemplates:
+          image:
+            repository: dhis2/postgresql-curl
+            pullPolicy: IfNotPresent
+            tag: 17
+          auth:
+            username: dhis
+            password: dhis
+            database: dhis2
+          persistence:
+            size: 5Gi
+
+      - name: dhis2-minio-minio
+        namespace: dhis2
+        createNamespace: true
+        remoteChart: minio
+        repo: https://charts.bitnami.com/bitnami
+        version: 14.7.5
+        useHelmSecrets: true
+        setValueTemplates:
+          persistence:
+            #  size: 8Gi
+            annotations:
+              helm\.sh/resource-policy: keep
+          auth:
+            rootUser: dhisdhis
+            rootPassword: dhisdhis
+            forcePassword: true
+          defaultBuckets: dhis2
+          global:
+            security:
+              allowInsecureImages: true
+          image:
+            repository: bitnamilegacy/minio
+
+      - name: dhis2-minio-core
+        namespace: dhis2
+        createNamespace: true
+        chartPath: ../../charts/core
+        setValueTemplates:
+          minIO:
+            provider: s3
+            container: dhis2
+            endpoint: http://dhis2-minio-minio.dhis2.svc:9000
+            location: eu-west-1
+            identity: dhisdhis
+            secret: dhisdhis
+          database:
+            username: dhis
+            password: dhis
+            database: dhis2
+            hostname: dhis2-minio-postgresql.dhis2.svc
+          ingress:
+            enabled: true
+            hostname: dhis2.dev.im.dhis2.org
+            path: /minio
+            certIssuer: cert-issuer-prod
+          startupProbe:
+            path: /minio
+          livenessProbe:
+            path: /minio
+          readinessProbe:
+            path: /minio
+          contextPath: /minio
+          image:
+            repository: dhis2/core-dev
+            # TODO: Should we actually target dev? At least configure this using an environment variable
+            tag: 2.42
+            pullPolicy: Always

@@ -44,5 +44,5 @@ deploy:
           contextPath: /core
           image:
             repository: dhis2/core-dev
-            tag: master
+            tag: 2.42
             pullPolicy: Always
