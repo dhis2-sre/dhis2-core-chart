@@ -65,7 +65,7 @@ spec:
             - name: CATALINA_OPTS
               value: {{ .Values.catalinaOpts }}
             - name: JAVA_OPTS
-              value: "-Dlog4j2.configurationFile={{ .Values.dhis2Home }}/log4j2.xml {{ .Values.javaOpts }}"
+              value: "-Dlog4j2.configurationFile={{ .Values.dhis2Home }}/log4j2.xml -Dcontext.sameSiteCookies={{ .Values.sessionCookieSameSite }} -Dcontext.path={{ .Values.contextPath }} {{ .Values.javaOpts }}"
             - name: DHIS2_HOME
               value: {{ .Values.dhis2Home }}
             - name: SERVER_SERVLET_CONTEXT_PATH
