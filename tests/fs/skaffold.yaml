@@ -1,0 +1,53 @@
+apiVersion: skaffold/v4beta6
+kind: Config
+deploy:
+  statusCheckDeadlineSeconds: 420
+  helm:
+    releases:
+      - name: dhis2-fs-postgresql
+        namespace: dhis2
+        createNamespace: true
+        remoteChart: postgresql
+        repo: https://charts.bitnami.com/bitnami
+        version: 11.9.8
+        valuesFiles:
+          - ./values/postgresql.yaml
+        setValueTemplates:
+          image:
+            repository: dhis2/postgresql-curl
+            pullPolicy: IfNotPresent
+            tag: 17
+          auth:
+            username: dhis
+            password: dhis
+            database: dhis2
+          persistence:
+            size: 5Gi
+
+      - name: dhis2-fs-core
+        namespace: dhis2
+        createNamespace: true
+        chartPath: ../../charts/core
+        setValueTemplates:
+          database:
+            username: dhis
+            password: dhis
+            database: dhis2
+            hostname: dhis2-fs-postgresql.dhis2.svc
+          ingress:
+            enabled: true
+            hostname: dhis2.dev.im.dhis2.org
+            path: /fs
+            certIssuer: cert-issuer-prod
+          startupProbe:
+            path: /fs
+          livenessProbe:
+            path: /fs
+          readinessProbe:
+            path: /fs
+          contextPath: /fs
+          image:
+            repository: dhis2/core-dev
+            # TODO: Should we actually target dev? At least configure this using an environment variable
+            tag: 2.42
+            pullPolicy: Always

@@ -1,17 +1,17 @@
-#minIOConfig: |
-#  filestore.provider = s3
-#  filestore.container = dhis2
-#  filestore.endpoint = http://dhis2-minio.dhis2.svc:9000
-#  filestore.location = eu-west-1
-#  filestore.identity = dhisdhis
-#  filestore.secret = dhisdhis
+#minIO:
+#  provider: s3
+#  container: dhis2
+#  endpoint: http://dhis2-minio.dhis2.svc:9000
+#  location: eu-west-1
+#  identity: dhisdhis
+#  secret: dhisdhis
 
-#S3Config: |
-#  filestore.provider = aws-s3
-#  filestore.container = dhis2
-#  filestore.location = eu-west-1
-#  filestore.identity = dhisdhis
-#  filestore.secret = dhisdhis
+#S3:
+#  provider: aws-s3
+#  container: dhis2
+#  location: eu-west-1
+#  identity: dhisdhis
+#  secret: dhisdhis
 
 #WARNING: You need to add "--add-opens=java.base/java.lang=ALL-UNNAMED" to the JVM command line arguments to enable ThreadLocal memory leak detection. Alternatively, you can suppress this warning by disabling ThreadLocal memory leak detection.
 #WARNING: You need to add "--add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED" to the JVM command line arguments to enable RMI Target memory leak detection. Alternatively, you can suppress this warning by disabling RMI Target memory leak detection.

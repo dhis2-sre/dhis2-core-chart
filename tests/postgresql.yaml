@@ -1,8 +1,3 @@
-image:
-  repository: dhis2/postgresql-curl
-  pullPolicy: IfNotPresent
-  tag: 17
-
 primary:
   initdb:
     scripts:
@@ -45,11 +40,3 @@ primary:
         echo "Changing owner of $entity to dhis"
         exec_psql "alter view \"$entity\" owner to dhis"
         done
-
-auth:
-  username: dhis
-  password: dhis
-  database: dhis2
-
-persistence:
-  size: 5Gi
