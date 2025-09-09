@@ -73,6 +73,8 @@ spec:
           envFrom:
             - secretRef:
                 name: {{ include "dhis2-core-helm.fullname" . }}
+            - configMapRef:
+                name: {{ include "dhis2-core-helm.fullname" . }}-env
           ports:
             - name: http
               containerPort: 8080

@@ -35,6 +35,9 @@ data:
     filestore.identity = ${S3_IDENTITY}
     filestore.secret = ${S3_SECRET}
     {{- end }}
+    flyway.migrate_out_of_order = ${FLYWAY_MIGRATE_OUT_OF_ORDER}
+    flyway.repair_before_migration = ${FLYWAY_REPAIR_BEFORE_MIGRATION}
+    enable.query.logging = ${ENABLE_QUERY_LOGGING}
   log4j2.xml: |
     {{- .Files.Get .Values.log4j2 | nindent 4 }}
   server.xml: |
