@@ -58,6 +58,15 @@ database:
 # -- Value can be 'Lax', 'Strict', or 'None'.
 sessionCookieSameSite: Lax
 
+# Flyway migrations
+flyway:
+  # -- Allow out-of-order migrations
+  migrateOutOfOrder: false
+  # -- Repair before migrations
+  repairBeforeMigration: false
+
+# -- Enable SQL query logging
+enableQueryLogging: false
 
 # -- Custom configuration snippet (optional).
 #customConfigSnippet: |
