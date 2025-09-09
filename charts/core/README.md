@@ -1,6 +1,6 @@
 # core
 
-![Version: 0.27.0](https://img.shields.io/badge/Version-0.27.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
+![Version: 0.29.0](https://img.shields.io/badge/Version-0.29.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
 
 DHIS 2 Helm Chart
 
@@ -20,6 +20,9 @@ DHIS 2 Helm Chart
 | database.password | string | `"dhis"` | Default database password. |
 | database.username | string | `"dhis"` | Default database username. |
 | dhis2Home | string | `"/opt/dhis2"` | DHIS 2 home directory. |
+| enableQueryLogging | bool | `false` | Enable SQL query logging |
+| flyway.migrateOutOfOrder | bool | `false` | Allow out-of-order migrations |
+| flyway.repairBeforeMigration | bool | `false` | Repair before migrations |
 | fullnameOverride | string | `""` | Overrides the full name of the deployment (including namespace). |
 | googleAuth.clientEmail | string | `""` | The email address of the service account. |
 | googleAuth.clientId | string | `""` | The OAuth 2.0 Client ID. |
@@ -73,7 +76,7 @@ DHIS 2 Helm Chart
 | startupProbe.failureThreshold | int | `26` | Maximum number of failures. |
 | startupProbe.path | string | `"/"` | Path |
 | startupProbe.periodSeconds | int | `5` | Period between each try |
-| storage | object | `{"className":null,"volumeSize":"8Gi"}` | If MinIO or S3 is configured, then the following configuration is ignored and no pvc will be created |
+| storage | object | `{"className":null,"volumeSize":"8Gi"}` | If "minIO" or "S3" is configured, then the following configuration is ignored and no pvc will be created |
 | storage.className | string | `nil` | Name of the storage class. |
 | storage.volumeSize | string | `"8Gi"` | Size of the Persistent Volume Claim, e.g., 8Gi for 8 gigabytes. |
 | strategy.rollingUpdate.maxSurge | int | `1` | Maximum surge |
