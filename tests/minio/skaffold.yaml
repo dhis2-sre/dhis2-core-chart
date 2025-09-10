@@ -81,6 +81,3 @@ deploy:
             # TODO: Should we actually target dev? At least configure this using an environment variable
             tag: 2.42
             pullPolicy: Always
-# TODO: Remove before merging to master
-          keda:
-            enabled: true
