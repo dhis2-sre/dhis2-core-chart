@@ -1,6 +1,6 @@
 # core
 
-![Version: 0.29.0](https://img.shields.io/badge/Version-0.29.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
+![Version: 0.30.0](https://img.shields.io/badge/Version-0.30.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
 
 DHIS 2 Helm Chart
 
@@ -47,6 +47,15 @@ DHIS 2 Helm Chart
 | jobs.generateAnalytics.enabled | bool | `false` | Whether the "Generate Analytics" job is enabled. |
 | jobs.installApps.apps | list | `[{"name":"Capture","version":"latest"},{"name":"Dashboard","version":"latest"}]` | List of applications to install/update |
 | jobs.installApps.enabled | bool | `false` | Whether the "Install Apps" job is enabled. |
+| keda.enabled | bool | `false` | Whether to enable KEDA scaling or not. |
+| keda.initialCooldownPeriod | int | `600` | The delay before the cooldownPeriod starts after the initial creation |
+| keda.proxy | object | `{"hostname":"keda-add-ons-http-interceptor-proxy.keda.svc"}` | KEDA HTTP interceptor proxy hostname |
+| keda.replicas.max | int | `1` | Maximum number of replicas |
+| keda.replicas.min | int | `0` | Minimum number of replicas |
+| keda.scaledownPeriod | int | `300` | The delay before scaling down, starts after the last scaling event |
+| keda.scalingMetric.requestRate.granularity | string | `"1s"` |  |
+| keda.scalingMetric.requestRate.targetValue | int | `5` |  |
+| keda.scalingMetric.requestRate.window | string | `"30s"` |  |
 | livenessProbe.path | string | `"/"` | Path |
 | livenessProbe.timeoutSeconds | int | `1` | Timeout in seconds |
 | log4j2 | string | `"config/log4j2.xml"` | Path to the log4j2 configuration file. |
