@@ -234,6 +234,29 @@ ingress:
   # kubernetes.io/ingress.class: nginx
   # kubernetes.io/tls-acme: "true"
 
+# KEDA is a Kubernetes-based Event Driven Autoscaling component
+# Only support Nginx ingress controller... Service type: ExternalName
+keda:
+  # -- Whether to enable KEDA scaling or not.
+  enabled: false
+  replicas:
+    # -- Minimum number of replicas
+    min: 0
+    # -- Maximum number of replicas
+    max: 1
+  # -- The delay before the cooldownPeriod starts after the initial creation
+  initialCooldownPeriod: 600
+  # -- The delay before scaling down, starts after the last scaling event
+  scaledownPeriod: 300
+  # -- KEDA HTTP interceptor proxy hostname
+  proxy:
+    hostname: keda-add-ons-http-interceptor-proxy.keda.svc
+  scalingMetric:
+    requestRate:
+      granularity: 1s
+      targetValue: 5
+      window: 30s
+
 # -- Resource requests and limits for containers.
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
