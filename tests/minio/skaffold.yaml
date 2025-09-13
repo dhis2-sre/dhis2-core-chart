@@ -30,7 +30,6 @@ deploy:
         remoteChart: minio
         repo: https://charts.bitnami.com/bitnami
         version: 14.7.5
-        useHelmSecrets: true
         setValueTemplates:
           persistence:
             #  size: 8Gi
