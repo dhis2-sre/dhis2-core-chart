@@ -28,6 +28,9 @@ jobs:
       - name: Set kubeconfig
         run: echo "KUBECONFIG=$PWD/output/kubeconfig.yaml" >> $GITHUB_ENV
 
+      - name: Get nodes
+        run: kubectl get nodes
+
       - name: Install Helm and Sops
         uses: alexellis/arkade-get@master
         with:
