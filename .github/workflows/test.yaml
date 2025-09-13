@@ -31,8 +31,8 @@ jobs:
       - name: Get nodes
         run: |
           ls -l
-          ls -l $PWD/output/
-          cat $PWD/output/kubeconfig.yaml
+          ls -l $PWD/tests/output/
+          cat $PWD/tests/output/kubeconfig.yaml
 
       - name: Get nodes
         run: kubectl get nodes
