@@ -30,6 +30,7 @@ jobs:
 
       - name: Get nodes
         run: |
+          ls -l
           ls -l $PWD/output/
           cat $PWD/output/kubeconfig.yaml
 
