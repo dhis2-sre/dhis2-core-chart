@@ -26,7 +26,7 @@ jobs:
           done
 
       - name: Set kubeconfig
-        run: echo "KUBECONFIG=$PWD/output/kubeconfig.yaml" >> $GITHUB_ENV
+        run: echo "KUBECONFIG=$PWD/tests/output/kubeconfig.yaml" >> $GITHUB_ENV
 
       - name: Get nodes
         run: |
