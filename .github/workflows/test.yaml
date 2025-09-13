@@ -29,6 +29,11 @@ jobs:
         run: echo "KUBECONFIG=$PWD/output/kubeconfig.yaml" >> $GITHUB_ENV
 
       - name: Get nodes
+        run: |
+          ls -l $PWD/output/
+          cat $PWD/output/kubeconfig.yaml
+
+      - name: Get nodes
         run: kubectl get nodes
 
       - name: Install Helm and Sops
