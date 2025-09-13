@@ -39,6 +39,7 @@ deploy:
             hostname: dhis2-127-0-0-1.nip.io
             path: /fs
             certIssuer: cert-issuer-prod
+            className: traefik
           startupProbe:
             path: /fs
           livenessProbe:

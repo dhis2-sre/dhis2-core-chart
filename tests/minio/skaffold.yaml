@@ -69,6 +69,7 @@ deploy:
             hostname: dhis2-127-0-0-1.nip.io
             path: /minio
             certIssuer: cert-issuer-prod
+            className: traefik
           startupProbe:
             path: /minio
           livenessProbe:
