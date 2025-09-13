@@ -29,12 +29,6 @@ jobs:
         run: echo "KUBECONFIG=$PWD/tests/output/kubeconfig.yaml" >> $GITHUB_ENV
 
       - name: Get nodes
-        run: |
-          ls -l
-          ls -l $PWD/tests/output/
-          cat $PWD/tests/output/kubeconfig.yaml
-
-      - name: Get nodes
         run: kubectl get nodes
 
       - name: Install Helm and Sops
@@ -71,7 +65,7 @@ jobs:
 
       - name: Verify endpoints
         env:
-          ENDPOINTS: "http://dhis2.dev.im.dhis2.org/fs http://dhis2.dev.im.dhis2.org/minio"
+          ENDPOINTS: "http://dhis2-127-0-0-1.nip.io/fs http://dhis2-127-0-0-1.nip.io/minio"
         run: |
           for url in $ENDPOINTS; do
             echo "🔍 Checking $url"
