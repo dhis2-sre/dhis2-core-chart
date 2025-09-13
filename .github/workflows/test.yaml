@@ -49,12 +49,12 @@ jobs:
       - name: Deploy DHIS2 with FS
         run: |
           cd tests/fs/
-          skaffold run --status-check --wait-for-deletions
+          ./../../skaffold run --status-check --wait-for-deletions
 
       - name: Deploy DHIS2 with MinIO
         run: |
           cd tests/minio/
-          skaffold run --status-check --wait-for-deletions
+          ./../../skaffold run --status-check --wait-for-deletions
 
       - name: Deploy DHIS2 with S3
         run: |
