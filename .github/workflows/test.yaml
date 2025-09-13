@@ -25,15 +25,26 @@ jobs:
             sleep 5
           done
 
-      - name: Install kubectl + skaffold
-        run: |
-          curl -sLO "https://dl.k8s.io/release/$(curl -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-          install -m 0755 kubectl /usr/local/bin/kubectl
-          curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-amd64
-          install -m 0755 skaffold /usr/local/bin/skaffold
-
       - name: Set kubeconfig
         run: echo "KUBECONFIG=$PWD/output/kubeconfig.yaml" >> $GITHUB_ENV
+
+      - name: Install Helm and Sops
+        uses: alexellis/arkade-get@master
+        with:
+          helm: v3.12.3
+          sops: v3.7.3
+
+      - name: Setup helm secrets plugin
+        if: ${{ env.DEPLOY_ENVIRONMENT == 'true' }}
+        run: helm plugin install https://github.com/jkroepke/helm-secrets --version v4.6.5
+
+      - name: Setup Skaffold
+        run: |
+          wget https://storage.googleapis.com/skaffold/releases/${VERSION}/${BINARY} -O ./skaffold
+          chmod +x ./skaffold
+        env:
+          VERSION: v2.6.0
+          BINARY: skaffold-linux-amd64
 
       - name: Deploy DHIS2 with FS
         run: |
