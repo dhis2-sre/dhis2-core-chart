@@ -38,7 +38,6 @@ jobs:
           sops: v3.7.3
 
       - name: Setup helm secrets plugin
-        if: ${{ env.DEPLOY_ENVIRONMENT == 'true' }}
         run: helm plugin install https://github.com/jkroepke/helm-secrets --version v4.6.5
 
       - name: Setup Skaffold
