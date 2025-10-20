@@ -245,9 +245,9 @@ keda:
     # -- Maximum number of replicas
     max: 1
   # -- The delay before the cooldownPeriod starts after the initial creation
-  initialCooldownPeriod: 600
+  initialCooldownPeriod: 3600
   # -- The delay before scaling down, starts after the last scaling event
-  scaledownPeriod: 300
+  scaledownPeriod: 600
   # -- KEDA HTTP interceptor proxy hostname
   proxy:
     hostname: keda-add-ons-http-interceptor-proxy.keda.svc
