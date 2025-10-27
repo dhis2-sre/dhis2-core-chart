@@ -15,7 +15,7 @@ data:
     connection.username = ${DB_USERNAME}
     connection.password = ${DB_PASSWORD}
     {{- if .Values.ingress.enabled }}
-    server.base.url = http{{ if .Values.ingress.certIssuer }}s{{ end }}://{{ .Values.ingress.hostname }}/
+    server.base.url = http{{ if .Values.ingress.certIssuer }}s{{ end }}://{{ .Values.ingress.hostname }}/{{ .Values.ingress.path }}
     server.https = {{ if .Values.ingress.certIssuer }}true{{ else }}false{{ end }}
     {{- end }}
     session.cookie.samesite = {{ .Values.sessionCookieSameSite }}
