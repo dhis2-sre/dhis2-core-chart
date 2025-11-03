@@ -225,7 +225,7 @@ ingress:
   className: nginx
   # -- Hostname
   hostname: dhis2-core.127.0.0.1.nip.io
-  # -- Path
+  # -- Path (should start with /)
   path: /
   # -- Name of certification issuer
   # certIssuer: letsencrypt-staging | letsencrypt-prod
