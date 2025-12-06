@@ -4,11 +4,17 @@
 commonLabels: {}
 
 glowroot:
+  # -- Whether to enable Glowroot or not.
   enabled: false
+  # -- Glowroot port
   port: 4000
-  version: "0.14.2"
+  # -- Glowroot version
+  version: 0.14.2
+  # -- Glowroot expected sha
   expectedSha: 7c7a46d8f0d020962f9299eb3c809a49d3156afb4ded46fae9088a603bc66fa3
+  # -- Glowroot init container image
   image: alpine:latest
+  # -- Glowroot configuration
   config:
     general:
       agentDisplayName: "DHIS2"
