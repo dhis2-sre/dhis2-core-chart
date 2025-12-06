@@ -1,6 +1,6 @@
 # core
 
-![Version: 0.31.1](https://img.shields.io/badge/Version-0.31.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
+![Version: 0.32.0](https://img.shields.io/badge/Version-0.32.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
 
 DHIS 2 Helm Chart
 
@@ -24,10 +24,12 @@ DHIS 2 Helm Chart
 | flyway.migrateOutOfOrder | bool | `false` | Allow out-of-order migrations |
 | flyway.repairBeforeMigration | bool | `false` | Repair before migrations |
 | fullnameOverride | string | `""` | Overrides the full name of the deployment (including namespace). |
-| glowroot.config | object | `{"gauges":[{"mbeanAttributes":[{"name":"HeapMemoryUsage.used"},{"name":"NonHeapMemoryUsage.used"}],"mbeanObjectName":"java.lang:type=Memory"}],"general":{"agentDisplayName":"DHIS2"},"ui":{"defaultGaugeNames":[],"defaultPercentiles":[50,95,99,99.9],"defaultTransactionType":"Web"},"web":{"bindAddress":"0.0.0.0","port":4000}}` | Glowroot configuration |
+| glowroot.config | object | `{"gauges":[{"mbeanAttributes":[{"name":"HeapMemoryUsage.used"},{"name":"NonHeapMemoryUsage.used"}],"mbeanObjectName":"java.lang:type=Memory"}],"general":{"agentDisplayName":"DHIS2"},"ui":{"defaultGaugeNames":[],"defaultPercentiles":[50,95,99,99.9],"defaultTransactionType":"Web"},"web":{"bindAddress":"0.0.0.0","contextPath":"/glowroot","port":4000}}` | Glowroot configuration |
 | glowroot.enabled | bool | `false` | Whether to enable Glowroot or not. |
 | glowroot.expectedSha | string | `"7c7a46d8f0d020962f9299eb3c809a49d3156afb4ded46fae9088a603bc66fa3"` | Glowroot expected sha |
 | glowroot.image | string | `"alpine:latest"` | Glowroot init container image |
+| glowroot.ingress.enabled | bool | `true` | Enable Glowroot ingress |
+| glowroot.ingress.path | string | `"/glowroot"` | Glowroot ingress path |
 | glowroot.port | int | `4000` | Glowroot port |
 | glowroot.version | string | `"0.14.2"` | Glowroot version |
 | googleAuth.clientEmail | string | `""` | The email address of the service account. |
