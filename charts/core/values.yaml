@@ -7,6 +7,7 @@ glowroot:
   enabled: false
   port: 4000
   version: "0.14.2"
+  expectedSha: 7c7a46d8f0d020962f9299eb3c809a49d3156afb4ded46fae9088a603bc66fa3
   image: alpine:latest
   config:
     general:
