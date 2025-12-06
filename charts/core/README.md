@@ -43,7 +43,7 @@ DHIS 2 Helm Chart
 | ingress.className | string | `"nginx"` | Class name |
 | ingress.enabled | bool | `true` | Whether to enable ingress or not. |
 | ingress.hostname | string | `"dhis2-core.127.0.0.1.nip.io"` | Hostname |
-| ingress.path | string | `"/"` | Path |
+| ingress.path | string | `"/"` | Path (should start with /) |
 | initContainers | list | `[]` | Init containers. |
 | javaOpts | string | `""` | Additional options for JVM.catalinaOpts: "-Dcontext.path='' -Dcontext.sameSiteCookies='lax'" |
 | jobs.authentication.dhis2.password | string | `"district"` | Default DHIS2 username. |
