@@ -61,13 +61,18 @@ spec:
             - sh
             - -c
             - |
-              apk add --no-cache wget unzip
-              wget -O /tmp/glowroot.zip https://github.com/glowroot/glowroot/releases/download/v{{ .Values.glowroot.version }}/glowroot-{{ .Values.glowroot.version }}-dist.zip
-              unzip /tmp/glowroot.zip -d /tmp
+               apk upgrade --no-cache
+               apk add --no-cache wget unzip
+               wget -O /tmp/glowroot.zip https://github.com/glowroot/glowroot/releases/download/v{{ .Values.glowroot.version }}/glowroot-{{ .Values.glowroot.version }}-dist.zip
+               unzip /tmp/glowroot.zip -d /tmp
                cp -r /tmp/glowroot/* /glowroot/
+               cp /tmp/glowroot-config/admin.json /glowroot/
           volumeMounts:
             - name: glowroot-agent
               mountPath: /glowroot
+            - name: glowroot-config
+              mountPath: /tmp/glowroot-config
+              readOnly: true
       {{- end }}
       {{- end }}
       containers:
@@ -80,7 +85,7 @@ spec:
             - name: CATALINA_OPTS
               value: {{ .Values.catalinaOpts }}
             - name: JAVA_OPTS
-              value: "-Dlog4j2.configurationFile={{ .Values.dhis2Home }}/log4j2.xml -Dcontext.sameSiteCookies={{ .Values.sessionCookieSameSite }} -Dcontext.path={{ .Values.contextPath }} {{- if .Values.glowroot.enabled }} -javaagent:/glowroot/glowroot.jar -Dglowroot.ui.port={{ .Values.glowroot.port }}{{- end }} {{ .Values.javaOpts }}"
+              value: "-Dlog4j2.configurationFile={{ .Values.dhis2Home }}/log4j2.xml -Dcontext.sameSiteCookies={{ .Values.sessionCookieSameSite }} -Dcontext.path={{ .Values.contextPath }} {{- if .Values.glowroot.enabled }} -javaagent:/glowroot/glowroot.jar -Dglowroot.ui.port={{ .Values.glowroot.port }} -Dglowroot.data.dir=/glowroot-data -Dglowroot.log.dir=/glowroot-data -Dglowroot.tmp.dir=/glowroot-data{{- end }} {{ .Values.javaOpts }}"
             - name: DHIS2_HOME
               value: {{ .Values.dhis2Home }}
             - name: SERVER_SERVLET_CONTEXT_PATH
@@ -136,12 +141,10 @@ spec:
             {{- if .Values.glowroot.enabled }}
             - name: glowroot-agent
               mountPath: /glowroot
+              readOnly: true
+            - name: glowroot-data
+              mountPath: /glowroot-data
               readOnly: false
-              #readOnly: true
-            - name: glowroot-config
-              mountPath: /glowroot/admin.json
-              subPath: admin.json
-              #readOnly: true
             {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
@@ -181,6 +184,8 @@ spec:
         - name: glowroot-config
           configMap:
             name: {{ include "dhis2-core-helm.fullname" . }}-glowroot
+        - name: glowroot-data
+          emptyDir: {}
         {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
