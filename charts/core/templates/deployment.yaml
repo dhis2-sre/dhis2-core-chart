@@ -54,6 +54,21 @@ spec:
             - name: dhis-home
               mountPath: {{ .Values.dhis2Home }}
       {{- end }}
+      {{- if .Values.glowroot.enabled }}
+        - name: glowroot-download
+          image: {{ .Values.glowroot.image }}
+          command:
+            - sh
+            - -c
+            - |
+              apk add --no-cache wget unzip
+              wget -O /tmp/glowroot.zip https://github.com/glowroot/glowroot/releases/download/v{{ .Values.glowroot.version }}/glowroot-{{ .Values.glowroot.version }}-dist.zip
+              unzip /tmp/glowroot.zip -d /tmp
+               cp -r /tmp/glowroot/* /glowroot/
+          volumeMounts:
+            - name: glowroot-agent
+              mountPath: /glowroot
+      {{- end }}
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
@@ -65,7 +80,7 @@ spec:
             - name: CATALINA_OPTS
               value: {{ .Values.catalinaOpts }}
             - name: JAVA_OPTS
-              value: "-Dlog4j2.configurationFile={{ .Values.dhis2Home }}/log4j2.xml -Dcontext.sameSiteCookies={{ .Values.sessionCookieSameSite }} -Dcontext.path={{ .Values.contextPath }} {{ .Values.javaOpts }}"
+              value: "-Dlog4j2.configurationFile={{ .Values.dhis2Home }}/log4j2.xml -Dcontext.sameSiteCookies={{ .Values.sessionCookieSameSite }} -Dcontext.path={{ .Values.contextPath }} {{- if .Values.glowroot.enabled }} -javaagent:/glowroot/glowroot.jar -Dglowroot.ui.port={{ .Values.glowroot.port }}{{- end }} {{ .Values.javaOpts }}"
             - name: DHIS2_HOME
               value: {{ .Values.dhis2Home }}
             - name: SERVER_SERVLET_CONTEXT_PATH
@@ -79,6 +94,11 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
+            {{- if .Values.glowroot.enabled }}
+            - name: glowroot
+              containerPort: {{ .Values.glowroot.port }}
+              protocol: TCP
+            {{- end }}
           startupProbe:
             failureThreshold: {{ .Values.startupProbe.failureThreshold }}
             periodSeconds: {{ .Values.startupProbe.periodSeconds }}
@@ -91,7 +111,7 @@ spec:
               path: {{ .Values.livenessProbe.path }}
               port: http
           readinessProbe:
-            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
             httpGet:
               path: {{ .Values.readinessProbe.path }}
               port: http
@@ -113,6 +133,16 @@ spec:
             - name: server-xml
               mountPath: /usr/local/tomcat/conf/server.xml
               subPath: server.xml
+            {{- if .Values.glowroot.enabled }}
+            - name: glowroot-agent
+              mountPath: /glowroot
+              readOnly: false
+              #readOnly: true
+            - name: glowroot-config
+              mountPath: /glowroot/admin.json
+              subPath: admin.json
+              #readOnly: true
+            {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
@@ -145,6 +175,13 @@ spec:
             items:
               - key: log4j2.xml
                 path: log4j2.xml
+        {{- if .Values.glowroot.enabled }}
+        - name: glowroot-agent
+          emptyDir: {}
+        - name: glowroot-config
+          configMap:
+            name: {{ include "dhis2-core-helm.fullname" . }}-glowroot
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
