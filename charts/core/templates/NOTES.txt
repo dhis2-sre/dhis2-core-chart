@@ -1,4 +1,4 @@
-1. Get the application URL by running these commands:
+Get the application URL by running these commands:
 {{- if .Values.ingress.enabled }}
   http{{ if $.Values.ingress.certIssuer }}s{{ end }}://{{ .Values.ingress.hostname }}{{ .Values.ingress.path }}
 {{- else if contains "NodePort" .Values.service.type }}
@@ -20,9 +20,9 @@
 {{- if .Values.glowroot.enabled }}
 Glowroot APM is enabled. Access the UI at:
 {{- if .Values.ingress.enabled }}
-  http{{ if $.Values.ingress.certIssuer }}s{{ end }}://{{ .Values.ingress.hostname }}:{{ .Values.glowroot.port }}
+  http{{ if $.Values.ingress.certIssuer }}s{{ end }}://{{ .Values.ingress.hostname }}{{ .Values.glowroot.ingress.path }}
 {{- else }}
-  Use port-forwarding: kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "dhis2-core-helm.fullname" . }} {{ .Values.glowroot.port }}:{{ .Values.glowroot.port }}
-  Then visit http://127.0.0.1:{{ .Values.glowroot.port }}
+  Use port-forwarding: kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "dhis2-core-helm.fullname" . }}-glowroot {{ .Values.glowroot.port }}:{{ .Values.glowroot.port }}
+  Then visit http://127.0.0.1:{{ .Values.glowroot.port }}{{ .Values.glowroot.ingress.path }}
 {{- end }}
 {{- end }}
