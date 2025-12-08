@@ -41,12 +41,13 @@ spec:
       serviceAccountName: {{ include "dhis2-core-helm.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      {{- if or (not (or (hasKey .Values "minIO") (hasKey .Values "S3"))) .Values.initContainers }}
+      {{- $usesLocalStorage := not (or (hasKey .Values "minIO") (hasKey .Values "S3")) -}}
+      {{- if or .Values.initContainers $usesLocalStorage .Values.glowroot.enabled }}
       initContainers:
       {{- with .Values.initContainers }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if not (or (hasKey .Values "minIO") (hasKey .Values "S3")) }}
+      {{- if $usesLocalStorage }}
         - name: dhis2-home-permissions
           image: busybox
           command:
