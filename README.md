@@ -28,7 +28,7 @@ https://dhis2-sre.github.io/dhis2-core-helm
 To install the chart you first need to add this chart repository
 
 ```sh
-helm repo add dhis2 https://dhis2-sre.github.io/dhis2-core-helm
+helm repo add dhis2 https://dhis2-sre.github.io/dhis2-core-chart
 helm repo update
 helm search repo dhis2/core --versions
 ```
