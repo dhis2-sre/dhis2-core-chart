@@ -30,7 +30,6 @@ deploy:
         remoteChart: minio
         repo: https://charts.bitnami.com/bitnami
         version: 14.7.5
-        useHelmSecrets: true
         setValueTemplates:
           persistence:
             #  size: 8Gi
@@ -66,9 +65,10 @@ deploy:
             hostname: dhis2-minio-postgresql.dhis2.svc
           ingress:
             enabled: true
-            hostname: dhis2.dev.im.dhis2.org
+            hostname: dhis2-127-0-0-1.nip.io
             path: /minio
             certIssuer: cert-issuer-prod
+            className: traefik
           startupProbe:
             path: /minio
           livenessProbe:

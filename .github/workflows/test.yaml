@@ -1,0 +1,86 @@
+name: Test Chart
+
+on:
+  push:
+    branches:
+      - master
+      - feat/*
+
+jobs:
+  test-chart:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Start k3s
+        run: |
+          cd tests/
+          docker compose up -d
+          for i in {1..40}; do
+            if docker compose exec -T k3s kubectl get nodes >/dev/null 2>&1; then
+              echo "k3s is ready"
+              break
+            fi
+            echo "waiting for k3s..."
+            sleep 5
+          done
+
+      - name: Set kubeconfig
+        run: echo "KUBECONFIG=$PWD/tests/output/kubeconfig.yaml" >> $GITHUB_ENV
+
+      - name: Get nodes
+        run: kubectl get nodes
+
+      - name: Install Helm and Sops
+        uses: alexellis/arkade-get@master
+        with:
+          helm: v3.12.3
+          sops: v3.7.3
+
+      - name: Setup helm secrets plugin
+        run: helm plugin install https://github.com/jkroepke/helm-secrets --version v4.6.5
+
+      - name: Setup Skaffold
+        run: |
+          wget https://storage.googleapis.com/skaffold/releases/${VERSION}/${BINARY} -O ./skaffold
+          chmod +x ./skaffold
+        env:
+          VERSION: v2.6.0
+          BINARY: skaffold-linux-amd64
+
+      - name: Deploy DHIS2 with FS
+        run: |
+          cd tests/fs/
+          ./../../skaffold run --status-check --wait-for-deletions
+
+      - name: Deploy DHIS2 with MinIO
+        run: |
+          cd tests/minio/
+          ./../../skaffold run --status-check --wait-for-deletions
+
+      - name: Deploy DHIS2 with S3
+        run: |
+          echo TODO!
+
+      - name: Verify endpoints
+        env:
+          ENDPOINTS: "http://dhis2-127-0-0-1.nip.io/fs http://dhis2-127-0-0-1.nip.io/minio"
+        run: |
+          for url in $ENDPOINTS; do
+            echo "🔍 Checking $url"
+            success=false
+            for i in {1..30}; do
+              if curl -sf "$url" > /dev/null; then
+                echo "✅ $url is reachable"
+                success=true
+                break
+              fi
+              echo "waiting for $url..."
+              sleep 5
+            done
+          
+            if [ "$success" = false ]; then
+              echo "❌ $url did not respond"
+              exit 1
+            fi
+          done
