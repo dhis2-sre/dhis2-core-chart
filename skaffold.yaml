@@ -32,7 +32,7 @@ deploy:
         setValueTemplates:
           ingress:
             enabled: true
-            hostname: dhis2.dev.im.dhis2.org
+            hostname: dhis2.im-feat.dhis2.org
             path: /core
             certIssuer: cert-issuer-prod
           startupProbe:
@@ -46,3 +46,7 @@ deploy:
             repository: dhis2/core-dev
             tag: 2.42
             pullPolicy: Always
+          keda:
+            enabled: false
+          glowroot:
+            enabled: true

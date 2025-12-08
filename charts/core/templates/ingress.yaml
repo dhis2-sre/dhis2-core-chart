@@ -1,6 +1,5 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "dhis2-core-helm.fullname" . -}}
-{{- $svcPort := .Values.service.port -}}
 {{- $tls := hasKey .Values.ingress "certIssuer" -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -34,5 +33,14 @@ spec:
               service:
                 name: {{ $fullName }}{{ if .Values.keda.enabled }}-keda-proxy{{ end }}
                 port:
-                  number: {{ $svcPort }}
+                  number: {{ .Values.service.port }}
+          {{- if and .Values.glowroot.enabled .Values.glowroot.ingress.enabled }}
+          - path: {{ .Values.glowroot.ingress.path }}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ $fullName }}-glowroot
+                port:
+                  number: {{ .Values.glowroot.port }}
+          {{- end }}
 {{- end }}

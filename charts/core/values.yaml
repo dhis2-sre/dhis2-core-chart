@@ -3,6 +3,40 @@
 # -- Common labels applied to all Kubernetes resources created by this chart.
 commonLabels: {}
 
+glowroot:
+  # -- Whether to enable Glowroot or not.
+  enabled: false
+  # -- Glowroot port
+  port: 4000
+  # -- Glowroot version
+  version: 0.14.2
+  # -- Glowroot expected sha
+  expectedSha: 7c7a46d8f0d020962f9299eb3c809a49d3156afb4ded46fae9088a603bc66fa3
+  # -- Glowroot init container image
+  image: alpine:latest
+  ingress:
+    # -- Enable Glowroot ingress
+    enabled: true
+    # -- Glowroot ingress path
+    path: /glowroot
+  # -- Glowroot configuration
+  config:
+    general:
+      agentDisplayName: "DHIS2"
+    web:
+      bindAddress: "0.0.0.0"
+      port: 4000
+      contextPath: /glowroot
+    ui:
+      defaultTransactionType: "Web"
+      defaultPercentiles: [50.0, 95.0, 99.0, 99.9]
+      defaultGaugeNames: []
+    gauges:
+      - mbeanObjectName: "java.lang:type=Memory"
+        mbeanAttributes:
+          - name: "HeapMemoryUsage.used"
+          - name: "NonHeapMemoryUsage.used"
+
 jobs:
   authentication:
     dhis2:
@@ -203,6 +237,7 @@ securityContext:
     drop:
       - ALL
   # -- Don't change this. DHIS2 currently doesn't support read-only filesystem since it requires write access to its home directory
+  # TODO: Just mount a tmpfs volume instead?
   readOnlyRootFilesystem: false
   # -- Enforce application running as a non-privileged user
   runAsNonRoot: true
