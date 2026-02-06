@@ -134,11 +134,8 @@ spec:
               path: {{ .Values.readinessProbe.path }}
               port: http
           volumeMounts:
-{{- if not (or (hasKey .Values "minIO") (hasKey .Values "S3")) }}
             - name: dhis-home
               mountPath: {{ .Values.dhis2Home }}
-              readOnly: false
-{{- end }}
             - name: dhis-conf
               mountPath: {{ .Values.dhis2Home }}/dhis.conf
               subPath: dhis.conf
@@ -164,10 +161,12 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
-{{- if not (or (hasKey .Values "minIO") (hasKey .Values "S3")) }}
         - name: dhis-home
+{{- if not (or (hasKey .Values "minIO") (hasKey .Values "S3")) }}
           persistentVolumeClaim:
             claimName: {{ include "dhis2-core-helm.fullname" . }}
+{{- else }}
+          emptyDir: {}
 {{- end }}
         - name: dhis-conf
           configMap:
