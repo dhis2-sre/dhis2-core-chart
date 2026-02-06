@@ -46,7 +46,6 @@ deploy:
             repository: dhis2/core-dev
             tag: 2.42
             pullPolicy: Always
-          keda:
-            enabled: false
-          glowroot:
-            enabled: true
+## Storage class for AWS
+          storage:
+            className: gp2
