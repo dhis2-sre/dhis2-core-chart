@@ -118,7 +118,7 @@ storage:
   # -- Size of the Persistent Volume Claim, e.g., 8Gi for 8 gigabytes.
   volumeSize: 8Gi
   # -- Name of the storage class.
-  className: gp2
+  className: ~
 
 ## "minIO" and "S3" are mutually exclusive, so make sure to only set one of them
 #minIO:
