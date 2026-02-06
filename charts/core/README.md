@@ -1,6 +1,6 @@
 # core
 
-![Version: 0.32.0](https://img.shields.io/badge/Version-0.32.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
+![Version: 0.32.1](https://img.shields.io/badge/Version-0.32.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
 
 DHIS 2 Helm Chart
 
@@ -16,8 +16,11 @@ DHIS 2 Helm Chart
 | commonLabels | object | `{}` | Common labels applied to all Kubernetes resources created by this chart. |
 | contextPath | string | `"/"` | Context path settings for Embedded Tomcat |
 | database.database | string | `"dhis2"` | Name of the database to use. |
+| database.existingSecret | string | `""` | Existing secret containing database credentials |
 | database.hostname | string | `"dhis2-postgresql.dhis2.svc"` | Hostname or IP address of the PostgreSQL server. |
 | database.password | string | `"dhis"` | Default database password. |
+| database.secretKeys.password | string | `"password"` | Key for password in the secret |
+| database.secretKeys.username | string | `"username"` | Optional: Key for username in the secret. If empty, uses the plain username value |
 | database.username | string | `"dhis"` | Default database username. |
 | dhis2Home | string | `"/opt/dhis2"` | DHIS 2 home directory. |
 | enableQueryLogging | bool | `false` | Enable SQL query logging |
@@ -93,8 +96,8 @@ DHIS 2 Helm Chart
 | startupProbe.failureThreshold | int | `26` | Maximum number of failures. |
 | startupProbe.path | string | `"/"` | Path |
 | startupProbe.periodSeconds | int | `5` | Period between each try |
-| storage | object | `{"className":null,"volumeSize":"8Gi"}` | If "minIO" or "S3" is configured, then the following configuration is ignored and no pvc will be created |
-| storage.className | string | `nil` | Name of the storage class. |
+| storage | object | `{"className":"gp2","volumeSize":"8Gi"}` | If "minIO" or "S3" is configured, then the following configuration is ignored and no pvc will be created |
+| storage.className | string | `"gp2"` | Name of the storage class. |
 | storage.volumeSize | string | `"8Gi"` | Size of the Persistent Volume Claim, e.g., 8Gi for 8 gigabytes. |
 | strategy.rollingUpdate.maxSurge | int | `1` | Maximum surge |
 | strategy.rollingUpdate.maxUnavailable | int | `0` | Maximum unavailable |

@@ -79,6 +79,13 @@ googleAuth:
 
 # Database connection settings.
 database:
+  # -- Existing secret containing database credentials
+  existingSecret: ""
+  secretKeys:
+    # -- Optional: Key for username in the secret. If empty, uses the plain username value
+    username: username
+    # -- Key for password in the secret
+    password: password
   # -- Default database username.
   username: dhis
   # -- Default database password.
@@ -111,7 +118,7 @@ storage:
   # -- Size of the Persistent Volume Claim, e.g., 8Gi for 8 gigabytes.
   volumeSize: 8Gi
   # -- Name of the storage class.
-  className: ~
+  className: gp2
 
 ## "minIO" and "S3" are mutually exclusive, so make sure to only set one of them
 #minIO:
