@@ -1,6 +1,6 @@
 # core
 
-![Version: 0.32.0](https://img.shields.io/badge/Version-0.32.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
+![Version: 0.32.1](https://img.shields.io/badge/Version-0.32.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
 
 DHIS 2 Helm Chart
 
@@ -84,6 +84,7 @@ DHIS 2 Helm Chart
 | securityContext.runAsNonRoot | bool | `true` | Enforce application running as a non-privileged user |
 | securityContext.runAsUser | int | `65534` | 65534 is commonly used as a non-root user, and it corresponds to the nobody user in the distroless image which is used for DHIS2 builds after 2.42. Before 2.42, the user id 65532 is used |
 | serverXml | string | `"config/server.xml"` | Path to the Tomcat server XML configuration file. |
+| service.annotations | object | `{}` | Additional annotations for the service |
 | service.port | int | `8080` | Service port |
 | service.type | string | `"ClusterIP"` | Service type |
 | serviceAccount.annotations | object | `{}` | Additional annotations for the service account. |
