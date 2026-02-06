@@ -96,8 +96,8 @@ DHIS 2 Helm Chart
 | startupProbe.failureThreshold | int | `26` | Maximum number of failures. |
 | startupProbe.path | string | `"/"` | Path |
 | startupProbe.periodSeconds | int | `5` | Period between each try |
-| storage | object | `{"className":"gp2","volumeSize":"8Gi"}` | If "minIO" or "S3" is configured, then the following configuration is ignored and no pvc will be created |
-| storage.className | string | `"gp2"` | Name of the storage class. |
+| storage | object | `{"className":null,"volumeSize":"8Gi"}` | If "minIO" or "S3" is configured, then the following configuration is ignored and no pvc will be created |
+| storage.className | string | `nil` | Name of the storage class. |
 | storage.volumeSize | string | `"8Gi"` | Size of the Persistent Volume Claim, e.g., 8Gi for 8 gigabytes. |
 | strategy.rollingUpdate.maxSurge | int | `1` | Maximum surge |
 | strategy.rollingUpdate.maxUnavailable | int | `0` | Maximum unavailable |
