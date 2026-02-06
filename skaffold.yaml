@@ -48,5 +48,12 @@ deploy:
             pullPolicy: Always
           keda:
             enabled: false
-          glowroot:
-            enabled: true
+
+## Enable MinIO (remember to also deploy the MinIO chart above)
+#          minIO:
+#            provider: s3
+#            container: dhis2
+#            endpoint: http://dhis2-minio.dhis2.svc:9000
+#            location: eu-west-1
+#            identity: dhisdhis
+#            secret: dhisdhis
