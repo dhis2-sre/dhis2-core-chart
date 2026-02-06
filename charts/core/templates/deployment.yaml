@@ -151,6 +151,8 @@ spec:
             - name: server-xml
               mountPath: /usr/local/tomcat/conf/server.xml
               subPath: server.xml
+            - name: tomcat-logs
+              mountPath: /usr/local/tomcat/logs
             {{- if .Values.glowroot.enabled }}
             - name: glowroot-agent
               mountPath: /glowroot
@@ -191,6 +193,8 @@ spec:
             items:
               - key: log4j2.xml
                 path: log4j2.xml
+        - name: tomcat-logs
+          emptyDir: {}
         {{- if .Values.glowroot.enabled }}
         - name: glowroot-agent
           emptyDir: {}
