@@ -237,7 +237,7 @@ securityContext:
   capabilities:
     drop:
       - ALL
-  # -- Whether to read-only root filesystem
+  # -- Whether to use a read-only root filesystem
   readOnlyRootFilesystem: true
   # -- Enforce application running as a non-privileged user
   runAsNonRoot: true

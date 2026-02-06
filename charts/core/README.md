@@ -79,7 +79,7 @@ DHIS 2 Helm Chart
 | resources | object | `{}` | Resource requests and limits for containers. |
 | securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsGroup":65534,"runAsNonRoot":true,"runAsUser":65534}` | Don't change anything here unless you really know what you are doing |
 | securityContext.allowPrivilegeEscalation | bool | `false` | Whether to allow privilege escalation |
-| securityContext.readOnlyRootFilesystem | bool | `true` | Whether to read-only root filesystem |
+| securityContext.readOnlyRootFilesystem | bool | `true` | Whether to use a read-only root filesystem |
 | securityContext.runAsGroup | int | `65534` | See `securityContext.runAsUser` |
 | securityContext.runAsNonRoot | bool | `true` | Enforce application running as a non-privileged user |
 | securityContext.runAsUser | int | `65534` | 65534 is commonly used as a non-root user, and it corresponds to the nobody user in the distroless image which is used for DHIS2 builds after 2.42. Before 2.42, the user id 65532 is used |
