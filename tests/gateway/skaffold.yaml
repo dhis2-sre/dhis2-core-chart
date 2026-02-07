@@ -36,8 +36,7 @@ deploy:
             hostname: dhis2-gateway-postgresql.dhis2.svc
           gateway:
             enabled: true
-            hostname: dhis2.im-feat.dhis2.org
-            certIssuer: cert-issuer-prod
+            hostname: dhis2-127-0-0-1.nip.io
             routes:
               main:
                 path: /gateway
