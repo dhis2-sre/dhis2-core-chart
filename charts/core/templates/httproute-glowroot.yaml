@@ -1,0 +1,27 @@
+{{- if and .Values.gateway.enabled .Values.glowroot.enabled .Values.gateway.routes.glowroot.enabled -}}
+{{- $fullName := include "dhis2-core-helm.fullname" . -}}
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ $fullName }}-glowroot
+  labels:
+    {{- include "dhis2-core-helm.labels" . | nindent 4 }}
+spec:
+  parentRefs:
+    - name: {{ $fullName }}
+      sectionName: http
+    {{- if .Values.gateway.tls.enabled }}
+    - name: {{ $fullName }}
+      sectionName: https
+    {{- end }}
+  hostnames:
+    - {{ .Values.gateway.hostname | quote }}
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: {{ .Values.gateway.routes.glowroot.path }}
+      backendRefs:
+        - name: {{ $fullName }}-glowroot
+          port: {{ .Values.gateway.routes.glowroot.servicePort }}
+{{- end }}
