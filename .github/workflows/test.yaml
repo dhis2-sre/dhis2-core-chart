@@ -48,6 +48,11 @@ jobs:
           VERSION: v2.6.0
           BINARY: skaffold-linux-amd64
 
+      - name: Deploy DHIS2 with Gateway API
+        run: |
+          cd tests/gateway/
+          ./../../skaffold run --status-check --wait-for-deletions
+
       - name: Deploy DHIS2 with FS
         run: |
           cd tests/fs/
