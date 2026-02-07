@@ -74,7 +74,7 @@ jobs:
 
       - name: Verify endpoints
         env:
-          ENDPOINTS: "http://dhis2-127-0-0-1.nip.io/fs http://dhis2-127-0-0-1.nip.io/minio"
+          ENDPOINTS: "http://dhis2-127-0-0-1.nip.io/fs http://dhis2-127-0-0-1.nip.io/minio http://dhis2-127-0-0-1.nip.io/gateway"
         run: |
           for url in $ENDPOINTS; do
             echo "🔍 Checking $url"

@@ -4,7 +4,7 @@ deploy:
   statusCheckDeadlineSeconds: 420
   helm:
     releases:
-      - name: dhis2-fs-postgresql
+      - name: dhis2-gateway-postgresql
         namespace: dhis2
         createNamespace: true
         remoteChart: postgresql
@@ -24,7 +24,7 @@ deploy:
           persistence:
             size: 5Gi
 
-      - name: dhis2-fs-core
+      - name: dhis2-gateway-core
         namespace: dhis2
         createNamespace: true
         chartPath: ../../charts/core
@@ -33,22 +33,22 @@ deploy:
             username: dhis
             password: dhis
             database: dhis2
-            hostname: dhis2-fs-postgresql.dhis2.svc
+            hostname: dhis2-gateway-postgresql.dhis2.svc
           gateway:
             enabled: true
             hostname: dhis2.im-feat.dhis2.org
             certIssuer: cert-issuer-prod
             routes:
               main:
-                path: /core
+                path: /gateway
             gatewayClassName: traefik
           startupProbe:
-            path: /fs
+            path: /gateway
           livenessProbe:
-            path: /fs
+            path: /gateway
           readinessProbe:
-            path: /fs
-          contextPath: /fs
+            path: /gateway
+          contextPath: /gateway
           image:
             repository: dhis2/core-dev
             # TODO: Should we actually target dev? At least configure this using an environment variable
