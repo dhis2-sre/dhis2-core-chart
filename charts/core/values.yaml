@@ -252,6 +252,8 @@ service:
   type: ClusterIP
   # -- Service port
   port: 8080
+  # -- Additional annotations for the service
+  annotations: {}
 
 ingress:
   # -- Whether to enable ingress or not.
