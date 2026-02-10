@@ -31,10 +31,17 @@ deploy:
           - ./values/dhis2.yaml
         setValueTemplates:
           ingress:
-            enabled: true
+            enabled: false
             hostname: dhis2.im-feat.dhis2.org
             path: /core
             certIssuer: cert-issuer-prod
+          gateway:
+            enabled: true
+            hostname: dhis2.im-feat.dhis2.org
+            certIssuer: cert-issuer-prod
+            routes:
+              main:
+                path: /core
           startupProbe:
             path: /core
           livenessProbe:
