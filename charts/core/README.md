@@ -16,8 +16,11 @@ DHIS 2 Helm Chart
 | commonLabels | object | `{}` | Common labels applied to all Kubernetes resources created by this chart. |
 | contextPath | string | `"/"` | Context path settings for Embedded Tomcat |
 | database.database | string | `"dhis2"` | Name of the database to use. |
+| database.existingSecret | string | `""` | Existing secret containing database credentials |
 | database.hostname | string | `"dhis2-postgresql.dhis2.svc"` | Hostname or IP address of the PostgreSQL server. |
 | database.password | string | `"dhis"` | Default database password. |
+| database.secretKeys.password | string | `"password"` | Key for password in the secret |
+| database.secretKeys.username | string | `"username"` | Optional: Key for username in the secret. If empty, uses the plain username value |
 | database.username | string | `"dhis"` | Default database username. |
 | dhis2Home | string | `"/opt/dhis2"` | DHIS 2 home directory. |
 | enableQueryLogging | bool | `false` | Enable SQL query logging |

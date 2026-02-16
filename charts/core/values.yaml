@@ -79,6 +79,13 @@ googleAuth:
 
 # Database connection settings.
 database:
+  # -- Existing secret containing database credentials
+  existingSecret: ""
+  secretKeys:
+    # -- Optional: Key for username in the secret. If empty, uses the plain username value
+    username: username
+    # -- Key for password in the secret
+    password: password
   # -- Default database username.
   username: dhis
   # -- Default database password.

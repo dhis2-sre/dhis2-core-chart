@@ -103,6 +103,26 @@ spec:
               value: {{ .Values.dhis2Home }}
             - name: SERVER_SERVLET_CONTEXT_PATH
               value: {{ .Values.contextPath }}
+{{- if and .Values.database.existingSecret .Values.database.secretKeys.username }}
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.existingSecret }}
+                  key: {{ .Values.database.secretKeys.username }}
+{{- else }}
+            - name: DB_USERNAME
+              value: {{ .Values.database.username | quote }}
+{{- end }}
+{{- if .Values.database.existingSecret }}
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.existingSecret }}
+                  key: {{ .Values.database.secretKeys.password }}
+{{- else }}
+            - name: DB_PASSWORD
+              value: {{ .Values.database.password | quote }}
+{{- end }}
           envFrom:
             - secretRef:
                 name: {{ include "dhis2-core-helm.fullname" . }}
