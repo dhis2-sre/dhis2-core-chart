@@ -77,9 +77,9 @@ DHIS 2 Helm Chart
 | readinessProbe.timeoutSeconds | int | `1` | Timeout in seconds |
 | replicaCount | int | `1` | Number of replicas (instances) of DHIS 2 to run. |
 | resources | object | `{}` | Resource requests and limits for containers. |
+| securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsGroup":65534,"runAsNonRoot":true,"runAsUser":65534}` | Don't change anything here unless you really know what you are doing |
 | securityContext.allowPrivilegeEscalation | bool | `false` | Whether to allow privilege escalation |
-| securityContext.capabilities.drop[0] | string | `"ALL"` |  |
-| securityContext.readOnlyRootFilesystem | bool | `false` | Don't change this. DHIS2 currently doesn't support read-only filesystem since it requires write access to its home directory TODO: Just mount a tmpfs volume instead? |
+| securityContext.readOnlyRootFilesystem | bool | `true` | Whether to use a read-only root filesystem |
 | securityContext.runAsGroup | int | `65534` | See `securityContext.runAsUser` |
 | securityContext.runAsNonRoot | bool | `true` | Enforce application running as a non-privileged user |
 | securityContext.runAsUser | int | `65534` | 65534 is commonly used as a non-root user, and it corresponds to the nobody user in the distroless image which is used for DHIS2 builds after 2.42. Before 2.42, the user id 65532 is used |
