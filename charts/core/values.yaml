@@ -237,15 +237,15 @@ podLabels: {}
 # -- Security context settings for pods (e.g., fsGroup).
 podSecurityContext: {}
 
+# -- Don't change anything here unless you really know what you are doing
 securityContext:
   # -- Whether to allow privilege escalation
   allowPrivilegeEscalation: false
   capabilities:
     drop:
       - ALL
-  # -- Don't change this. DHIS2 currently doesn't support read-only filesystem since it requires write access to its home directory
-  # TODO: Just mount a tmpfs volume instead?
-  readOnlyRootFilesystem: false
+  # -- Whether to use a read-only root filesystem
+  readOnlyRootFilesystem: true
   # -- Enforce application running as a non-privileged user
   runAsNonRoot: true
   # -- 65534 is commonly used as a non-root user, and it corresponds to the nobody user in the distroless image which is used for DHIS2 builds after 2.42. Before 2.42, the user id 65532 is used
@@ -259,6 +259,8 @@ service:
   type: ClusterIP
   # -- Service port
   port: 8080
+  # -- Additional annotations for the service
+  annotations: {}
 
 ingress:
   # -- Whether to enable ingress or not.
