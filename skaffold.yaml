@@ -46,12 +46,6 @@ deploy:
             repository: dhis2/core-dev
             tag: 2.42
             pullPolicy: Always
-## Use existing secret manually created
-#          database:
-#            existingSecret: existing-pg-secret
-#            secretKeys:
-#              username: USERNAME
-#              password: PASSWORD
 
 # Use existing secret created by the Bitnami Postgresql chart
           database:
