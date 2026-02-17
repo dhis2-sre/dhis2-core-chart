@@ -31,6 +31,11 @@ jobs:
       - name: Get nodes
         run: kubectl get nodes
 
+      - name: Install Gateway API CRDs
+        run: kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/${VERSION}/standard-install.yaml
+        env:
+          VERSION: v1.2.1
+
       - name: Install Helm and Sops
         uses: alexellis/arkade-get@master
         with:
@@ -48,6 +53,11 @@ jobs:
           VERSION: v2.6.0
           BINARY: skaffold-linux-amd64
 
+      - name: Deploy DHIS2 with Gateway API
+        run: |
+          cd tests/gateway/
+          ./../../skaffold run --status-check --wait-for-deletions
+
       - name: Deploy DHIS2 with FS
         run: |
           cd tests/fs/
@@ -64,7 +74,7 @@ jobs:
 
       - name: Verify endpoints
         env:
-          ENDPOINTS: "http://dhis2-127-0-0-1.nip.io/fs http://dhis2-127-0-0-1.nip.io/minio"
+          ENDPOINTS: "http://dhis2-127-0-0-1.nip.io/gateway http://dhis2-127-0-0-1.nip.io/fs http://dhis2-127-0-0-1.nip.io/minio"
         run: |
           for url in $ENDPOINTS; do
             echo "🔍 Checking $url"

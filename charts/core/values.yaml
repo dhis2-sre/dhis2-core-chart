@@ -278,6 +278,37 @@ ingress:
   # kubernetes.io/ingress.class: nginx
   # kubernetes.io/tls-acme: "true"
 
+# Gateway API configuration (alternative to Ingress)
+gateway:
+  # -- Whether to enable Gateway API or not.
+  enabled: false
+  # -- Gateway class name for the Gateway API implementation
+  gatewayClassName: nginx
+  # -- Hostname for the Gateway listener
+  hostname: dhis2-core.127.0.0.1.nip.io
+  # -- TLS configuration for the Gateway listener
+  tls:
+    # -- Whether to enable TLS
+    enabled: false
+    # -- Name of certification issuer
+    # certIssuer: letsencrypt-staging | letsencrypt-prod
+    # -- Certificate secret name (auto-generated if not provided)
+    secretName: ""
+  # -- HTTP routes configuration
+  routes:
+    main:
+      # -- Path for the main DHIS2 service
+      path: /
+      # -- Service port for the main DHIS2 service
+      servicePort: 8080
+    glowroot:
+      # -- Whether to enable Glowroot HTTP route
+      enabled: false
+      # -- Path for the Glowroot service
+      path: /glowroot
+      # -- Service port for the Glowroot service
+      servicePort: 4000
+
 # KEDA is a Kubernetes-based Event Driven Autoscaling component
 # Only support Nginx ingress controller... Service type: ExternalName
 keda:

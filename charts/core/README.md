@@ -27,6 +27,18 @@ DHIS 2 Helm Chart
 | flyway.migrateOutOfOrder | bool | `false` | Allow out-of-order migrations |
 | flyway.repairBeforeMigration | bool | `false` | Repair before migrations |
 | fullnameOverride | string | `""` | Overrides the full name of the deployment (including namespace). |
+| gateway.enabled | bool | `false` | Whether to enable Gateway API or not. |
+| gateway.gatewayClassName | string | `"nginx"` | Gateway class name for the Gateway API implementation |
+| gateway.hostname | string | `"dhis2-core.127.0.0.1.nip.io"` | Hostname for the Gateway listener |
+| gateway.routes | object | `{"glowroot":{"enabled":false,"path":"/glowroot","servicePort":4000},"main":{"path":"/","servicePort":8080}}` | HTTP routes configuration |
+| gateway.routes.glowroot.enabled | bool | `false` | Whether to enable Glowroot HTTP route |
+| gateway.routes.glowroot.path | string | `"/glowroot"` | Path for the Glowroot service |
+| gateway.routes.glowroot.servicePort | int | `4000` | Service port for the Glowroot service |
+| gateway.routes.main.path | string | `"/"` | Path for the main DHIS2 service |
+| gateway.routes.main.servicePort | int | `8080` | Service port for the main DHIS2 service |
+| gateway.tls | object | `{"enabled":false,"secretName":""}` | TLS configuration for the Gateway listener |
+| gateway.tls.enabled | bool | `false` | Whether to enable TLS |
+| gateway.tls.secretName | string | `""` | Certificate secret name (auto-generated if not provided) |
 | glowroot.config | object | `{"gauges":[{"mbeanAttributes":[{"name":"HeapMemoryUsage.used"},{"name":"NonHeapMemoryUsage.used"}],"mbeanObjectName":"java.lang:type=Memory"}],"general":{"agentDisplayName":"DHIS2"},"ui":{"defaultGaugeNames":[],"defaultPercentiles":[50,95,99,99.9],"defaultTransactionType":"Web"},"web":{"bindAddress":"0.0.0.0","contextPath":"/glowroot","port":4000}}` | Glowroot configuration |
 | glowroot.enabled | bool | `false` | Whether to enable Glowroot or not. |
 | glowroot.expectedSha | string | `"7c7a46d8f0d020962f9299eb3c809a49d3156afb4ded46fae9088a603bc66fa3"` | Glowroot expected sha |
