@@ -103,6 +103,26 @@ spec:
               value: {{ .Values.dhis2Home }}
             - name: SERVER_SERVLET_CONTEXT_PATH
               value: {{ .Values.contextPath }}
+{{- if and .Values.database.existingSecret .Values.database.secretKeys.username }}
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.existingSecret }}
+                  key: {{ .Values.database.secretKeys.username }}
+{{- else }}
+            - name: DB_USERNAME
+              value: {{ .Values.database.username | quote }}
+{{- end }}
+{{- if .Values.database.existingSecret }}
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.existingSecret }}
+                  key: {{ .Values.database.secretKeys.password }}
+{{- else }}
+            - name: DB_PASSWORD
+              value: {{ .Values.database.password | quote }}
+{{- end }}
           envFrom:
             - secretRef:
                 name: {{ include "dhis2-core-helm.fullname" . }}
@@ -134,23 +154,24 @@ spec:
               path: {{ .Values.readinessProbe.path }}
               port: http
           volumeMounts:
-{{- if not (or (hasKey .Values "minIO") (hasKey .Values "S3")) }}
             - name: dhis-home
               mountPath: {{ .Values.dhis2Home }}
-              readOnly: false
-{{- end }}
             - name: dhis-conf
               mountPath: {{ .Values.dhis2Home }}/dhis.conf
               subPath: dhis.conf
+{{- if .Values.googleAuth.projectId }}
             - name: google-auth-json
               mountPath: {{ .Values.dhis2Home }}/dhis-google-auth.json
               subPath: dhis-google-auth.json
+{{- end }}
             - name: log4j2-xml
               mountPath: {{ .Values.dhis2Home }}/log4j2.xml
               subPath: log4j2.xml
             - name: server-xml
               mountPath: /usr/local/tomcat/conf/server.xml
               subPath: server.xml
+            - name: tomcat-logs
+              mountPath: /usr/local/tomcat/logs
             {{- if .Values.glowroot.enabled }}
             - name: glowroot-agent
               mountPath: /glowroot
@@ -162,10 +183,12 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
-{{- if not (or (hasKey .Values "minIO") (hasKey .Values "S3")) }}
         - name: dhis-home
+{{- if not (or (hasKey .Values "minIO") (hasKey .Values "S3")) }}
           persistentVolumeClaim:
             claimName: {{ include "dhis2-core-helm.fullname" . }}
+{{- else }}
+          emptyDir: {}
 {{- end }}
         - name: dhis-conf
           configMap:
@@ -173,12 +196,14 @@ spec:
             items:
               - key: dhis.conf
                 path: dhis.conf
+{{- if .Values.googleAuth.projectId }}
         - name: google-auth-json
-          configMap:
-            name: {{ include "dhis2-core-helm.fullname" . }}
+          secret:
+            secretName: {{ include "dhis2-core-helm.fullname" . }}
             items:
               - key: dhis-google-auth.json
                 path: dhis-google-auth.json
+{{- end }}
         - name: server-xml
           configMap:
             name: {{ include "dhis2-core-helm.fullname" . }}
@@ -191,6 +216,8 @@ spec:
             items:
               - key: log4j2.xml
                 path: log4j2.xml
+        - name: tomcat-logs
+          emptyDir: {}
         {{- if .Values.glowroot.enabled }}
         - name: glowroot-agent
           emptyDir: {}
