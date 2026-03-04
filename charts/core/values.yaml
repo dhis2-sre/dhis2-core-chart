@@ -117,7 +117,7 @@ enableQueryLogging: false
 storage:
   # -- Size of the Persistent Volume Claim, e.g., 8Gi for 8 gigabytes.
   volumeSize: 8Gi
-  # -- Name of the storage class.
+  # -- Name of the storage class. It's recommended to update this to a storage class which exists on your cluster. Such as "gp2" on AWS.
   className: ~
 
 ## "minIO" and "S3" are mutually exclusive, so make sure to only set one of them
