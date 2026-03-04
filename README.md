@@ -36,6 +36,10 @@ helm search repo dhis2/core --versions
 The versions returned are gathered from [index.yaml](./index.yaml) which is
 published to [this GitHub page](https://dhis2-sre.github.io/dhis2-core-helm/index.yaml).
 
+## Storage Class
+
+The storage class used by the chart is defined as `~`. This means that the default storage class will be used. However, since the pvc is an immutable resource, it cannot be changed after creation. Thus trying to update the chart is likely to fail. This can be prevented by setting the storage class to the actual storage class used by the cluster, e.g. `gp2` for EKS. Please see the `storage.className` property in the values.yaml file of this chart for more information.
+
 ### Release
 
 Bump the version in [Chart.yaml](./charts/core/Chart.yaml), commit and push.
