@@ -119,6 +119,7 @@ spec:
 
 ---
 
+{{- if .Values.doris }}
 {{- if .Values.doris.createDatabase }}
 {{- if not .Values.doris.database }}
 {{- fail "doris.database is required when createDatabase is true" }}
@@ -148,4 +149,5 @@ spec:
             - -uroot
             - -e
             - "CREATE DATABASE IF NOT EXISTS {{ .Values.doris.database }}"
+{{- end }}
 {{- end }}
