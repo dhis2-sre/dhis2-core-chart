@@ -116,3 +116,32 @@ spec:
               {{- .Files.Get "scripts/install-apps.sh" | nindent 15 }}
       restartPolicy: OnFailure
 {{- end }}
+
+---
+
+{{- if .Values.doris.createDatabase }}
+{{- if not .Values.doris.database }}
+{{- fail "doris.database is required when createDatabase is true" }}
+{{- end }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ include "dhis2-core-helm.fullname" . }}-create-database"
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "1"
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: create-database
+          image: mariadb:client
+          command:
+            - /bin/sh
+            - -c
+            - |
+              mysql -h {{ .Values.doris.hostname }} -P {{ .Values.doris.port }} -uroot -e "CREATE DATABASE IF NOT EXISTS {{ .Values.doris.database }}"
+{{- end }}

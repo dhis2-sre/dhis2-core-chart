@@ -10,6 +10,7 @@ commonLabels: {}
 #  useSSL: false
 #  username: ""
 #  password: ""
+#  createDatabase: true
 
 glowroot:
   # -- Whether to enable Glowroot or not.
