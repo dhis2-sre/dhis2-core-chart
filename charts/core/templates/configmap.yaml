@@ -38,6 +38,14 @@ data:
     flyway.migrate_out_of_order = ${FLYWAY_MIGRATE_OUT_OF_ORDER}
     flyway.repair_before_migration = ${FLYWAY_REPAIR_BEFORE_MIGRATION}
     enable.query.logging = ${ENABLE_QUERY_LOGGING}
+    {{- if hasKey .Values "doris" }}
+    analytics.table.unlogged = on
+    analytics.table.use_views = off
+    analytics.database = doris
+    analytics.connection.url = jdbc:mysql://${DORIS_HOSTNAME}:${DORIS_PORT}/${DORIS_DATABASE}?useUnicode=true&characterEncoding=UTF-8&useSSL=${DORIS_USE_SSL}
+    analytics.connection.username = ${DORIS_USERNAME}
+    analytics.connection.password = ${DORIS_PASSWORD}
+    {{- end }}
   log4j2.xml: |
     {{- .Files.Get .Values.log4j2 | nindent 4 }}
   server.xml: |
