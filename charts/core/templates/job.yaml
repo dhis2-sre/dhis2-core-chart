@@ -138,10 +138,14 @@ spec:
       restartPolicy: OnFailure
       containers:
         - name: create-database
-          image: mariadb:client
+          image: mysql:8.0
           command:
-            - /bin/sh
-            - -c
-            - |
-              mysql -h {{ .Values.doris.hostname }} -P {{ .Values.doris.port }} -uroot -e "CREATE DATABASE IF NOT EXISTS {{ .Values.doris.database }}"
+            - mysql
+            - -h
+            - {{ .Values.doris.hostname }}
+            - -P
+            - {{ .Values.doris.port | quote }}
+            - -uroot
+            - -e
+            - "CREATE DATABASE IF NOT EXISTS {{ .Values.doris.database }}"
 {{- end }}

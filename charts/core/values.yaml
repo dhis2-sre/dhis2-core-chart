@@ -4,13 +4,13 @@
 commonLabels: {}
 
 #doris:
-#  database: dhis2
 #  hostname: doris.doris.svc
 #  port: 9030
 #  useSSL: false
+#  database: dhis2
+#  createDatabase: true
 #  username: ""
 #  password: ""
-#  createDatabase: true
 
 glowroot:
   # -- Whether to enable Glowroot or not.
