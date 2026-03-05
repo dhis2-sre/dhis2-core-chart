@@ -3,6 +3,16 @@ entries:
   core:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2026-03-05T07:05:00.510575143Z"
+    description: DHIS 2 Helm Chart
+    digest: 31fd4beba639ccab74bc7d78f315d6fa4cf66586e14cdb146d082f19899dcc34
+    name: core
+    type: application
+    urls:
+    - https://github.com/dhis2-sre/dhis2-core-chart/releases/download/core-0.34.0/core-0.34.0.tgz
+    version: 0.34.0
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2026-03-05T01:17:45.690568393Z"
     description: DHIS 2 Helm Chart
     digest: b8a671fb1bf9568da23e8a1fb20ff690eeb718ea4a3b50837d92484902074ec1
@@ -481,4 +491,4 @@ entries:
     urls:
     - https://github.com/dhis2-sre/dhis2-core-helm/releases/download/core-0.7.1/core-0.7.1.tgz
     version: 0.7.1
-generated: "2026-03-05T01:17:45.690947465Z"
+generated: "2026-03-05T07:05:00.511050244Z"
