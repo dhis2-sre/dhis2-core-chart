@@ -46,7 +46,19 @@ deploy:
             repository: dhis2/core-dev
             tag: 2.42
             pullPolicy: Always
-          keda:
-            enabled: false
-          glowroot:
-            enabled: true
+
+# Use existing secret created by the Bitnami Postgresql chart
+          database:
+            existingSecret: dhis2-postgresql
+            secretKeys:
+              username: ""
+              password: password
+
+## Enable MinIO (remember to also deploy the MinIO chart above)
+#          minIO:
+#            provider: s3
+#            container: dhis2
+#            endpoint: http://dhis2-minio.dhis2.svc:9000
+#            location: eu-west-1
+#            identity: dhisdhis
+#            secret: dhisdhis
