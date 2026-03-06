@@ -87,6 +87,19 @@ spec:
               mountPath: /tmp/glowroot-config
               readOnly: true
       {{- end }}
+      {{- if and (hasKey .Values "doris") .Values.doris.hostname }}
+        - name: jdbc-driver-download
+          image: curlimages/curl
+          command:
+            - sh
+            - -c
+            - |
+              set -o errexit
+              curl -L -o /opt/apache-doris/fe/jdbc_drivers/postgresql.jar https://raw.githubusercontent.com/dhis2/dhis2-core/master/docker/doris/postgresql-42.7.5.jar
+          volumeMounts:
+            - name: jdbc-drivers
+              mountPath: /opt/apache-doris/fe/jdbc_drivers
+      {{- end }}
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
@@ -180,6 +193,11 @@ spec:
               mountPath: /glowroot-data
               readOnly: false
             {{- end }}
+            {{- if and (hasKey .Values "doris") .Values.doris.hostname }}
+            - name: jdbc-drivers
+              mountPath: /opt/apache-doris/fe/jdbc_drivers
+              readOnly: true
+            {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
@@ -225,6 +243,10 @@ spec:
           configMap:
             name: {{ include "dhis2-core-helm.fullname" . }}-glowroot
         - name: glowroot-data
+          emptyDir: {}
+        {{- end }}
+        {{- if and (hasKey .Values "doris") .Values.doris.hostname }}
+        - name: jdbc-drivers
           emptyDir: {}
         {{- end }}
       {{- with .Values.nodeSelector }}
