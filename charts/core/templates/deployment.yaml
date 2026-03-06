@@ -95,6 +95,7 @@ spec:
             - -c
             - |
               set -o errexit
+              mkdir -p /opt/apache-doris/fe/jdbc_drivers
               curl -L -o /opt/apache-doris/fe/jdbc_drivers/postgresql.jar https://raw.githubusercontent.com/dhis2/dhis2-core/master/docker/doris/postgresql-42.7.5.jar
           volumeMounts:
             - name: jdbc-drivers
