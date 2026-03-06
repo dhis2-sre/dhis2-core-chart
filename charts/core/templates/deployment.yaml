@@ -42,7 +42,7 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       {{- $usesLocalStorage := not (or (hasKey .Values "minIO") (hasKey .Values "S3")) -}}
-      {{- if or .Values.initContainers $usesLocalStorage .Values.glowroot.enabled }}
+      {{- if or .Values.initContainers $usesLocalStorage .Values.glowroot.enabled (and (hasKey .Values "doris") .Values.doris.hostname) }}
       initContainers:
       {{- with .Values.initContainers }}
         {{- toYaml . | nindent 8 }}
