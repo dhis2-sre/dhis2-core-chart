@@ -1,6 +1,6 @@
 # core
 
-![Version: 0.32.1](https://img.shields.io/badge/Version-0.32.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
+![Version: 0.34.6](https://img.shields.io/badge/Version-0.34.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
 
 DHIS 2 Helm Chart
 
@@ -51,6 +51,7 @@ DHIS 2 Helm Chart
 | ingress.path | string | `"/"` | Path (should start with /) |
 | initContainers | list | `[]` | Init containers. |
 | javaOpts | string | `""` | Additional options for JVM.catalinaOpts: "-Dcontext.path='' -Dcontext.sameSiteCookies='lax'" |
+| javaTempDir | string | `"/tmp/dhis"` | Temporary directory for Java (used when readOnlyRootFilesystem is true). |
 | jobs.authentication.dhis2.password | string | `"district"` | Default DHIS2 username. |
 | jobs.authentication.dhis2.username | string | `"admin"` | Default DHIS2 username. |
 | jobs.enableUsers.enabled | bool | `false` | Whether the "Enable Users" job is enabled. |

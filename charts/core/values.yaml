@@ -168,6 +168,9 @@ initContainers: []
 # -- DHIS 2 home directory.
 dhis2Home: /opt/dhis2
 
+# -- Temporary directory for Java (used when readOnlyRootFilesystem is true).
+javaTempDir: /tmp/dhis
+
 # -- Path to the log4j2 configuration file.
 log4j2: config/log4j2.xml
 
