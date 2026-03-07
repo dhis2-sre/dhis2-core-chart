@@ -3,8 +3,7 @@ name: Test Chart
 on:
   push:
     branches:
-      - master
-      - feat/*
+      - *
 
 jobs:
   test-chart:
