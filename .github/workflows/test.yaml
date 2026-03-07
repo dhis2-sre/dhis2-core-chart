@@ -67,7 +67,7 @@ jobs:
             echo "🔍 Checking $url"
             success=false
             for i in {1..30}; do
-              if curl -vsf "$url" > /dev/null; then
+              if curl --verbose --silent --fail --location "$url" > /dev/null; then
                 echo "✅ $url is reachable"
                 success=true
                 break
