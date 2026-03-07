@@ -2,9 +2,6 @@ name: Test Chart
 
 on:
   push:
-    branches:
-      - master
-      - feat/*
 
 jobs:
   test-chart:
@@ -70,7 +67,7 @@ jobs:
             echo "🔍 Checking $url"
             success=false
             for i in {1..30}; do
-              if curl -sf "$url" > /dev/null; then
+              if curl --verbose --silent --fail --location "$url" > /dev/null; then
                 echo "✅ $url is reachable"
                 success=true
                 break
@@ -84,3 +81,6 @@ jobs:
               exit 1
             fi
           done
+
+      - name: Show pods
+        run: kubectl get pods -o wide --all-namespaces
