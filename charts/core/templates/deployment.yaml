@@ -97,8 +97,20 @@ spec:
           env:
             - name: CATALINA_OPTS
               value: {{ .Values.catalinaOpts }}
-            - name: JAVA_OPTS
-              value: "-Dlog4j2.configurationFile={{ .Values.dhis2Home }}/log4j2.xml -Dcontext.sameSiteCookies={{ .Values.sessionCookieSameSite }} -Dcontext.path={{ .Values.contextPath }} {{- if .Values.glowroot.enabled }} -javaagent:/glowroot/glowroot.jar -Dglowroot.conf.dir=/glowroot -Dglowroot.data.dir=/glowroot-data -Dglowroot.log.dir=/glowroot-data -Dglowroot.tmp.dir=/glowroot-data{{- end }} {{ .Values.javaOpts }}"
+            - name: JAVA_TOOL_OPTIONS
+              value: >-
+                -Djava.io.tmpdir={{ .Values.javaTempDir }}
+                -Dlog4j2.configurationFile={{ .Values.dhis2Home }}/log4j2.xml
+                -Dcontext.sameSiteCookies={{ .Values.sessionCookieSameSite }}
+                -Dcontext.path={{ .Values.contextPath }}
+                {{- if .Values.glowroot.enabled }}
+                -javaagent:/glowroot/glowroot.jar
+                -Dglowroot.conf.dir=/glowroot
+                -Dglowroot.data.dir=/glowroot-data
+                -Dglowroot.log.dir=/glowroot-data
+                -Dglowroot.tmp.dir=/glowroot-data
+                {{- end }}
+                {{ .Values.javaOpts }}
             - name: DHIS2_HOME
               value: {{ .Values.dhis2Home }}
             - name: SERVER_SERVLET_CONTEXT_PATH
@@ -172,6 +184,8 @@ spec:
               subPath: server.xml
             - name: tomcat-logs
               mountPath: /usr/local/tomcat/logs
+            - name: java-tmp
+              mountPath: {{ .Values.javaTempDir }}
             {{- if .Values.glowroot.enabled }}
             - name: glowroot-agent
               mountPath: /glowroot
@@ -217,6 +231,8 @@ spec:
               - key: log4j2.xml
                 path: log4j2.xml
         - name: tomcat-logs
+          emptyDir: {}
+        - name: java-tmp
           emptyDir: {}
         {{- if .Values.glowroot.enabled }}
         - name: glowroot-agent
