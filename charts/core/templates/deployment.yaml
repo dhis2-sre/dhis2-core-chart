@@ -184,6 +184,8 @@ spec:
               subPath: server.xml
             - name: tomcat-logs
               mountPath: /usr/local/tomcat/logs
+            - name: tomcat-temp
+              mountPath: /usr/local/tomcat/temp
             - name: java-tmp
               mountPath: {{ .Values.javaTempDir }}
             {{- if .Values.glowroot.enabled }}
@@ -231,6 +233,8 @@ spec:
               - key: log4j2.xml
                 path: log4j2.xml
         - name: tomcat-logs
+          emptyDir: {}
+        - name: tomcat-temp
           emptyDir: {}
         - name: java-tmp
           emptyDir: {}
