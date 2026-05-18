@@ -290,6 +290,32 @@ ingress:
   # kubernetes.io/ingress.class: nginx
   # kubernetes.io/tls-acme: "true"
 
+# Gateway API HTTPRoute configuration (alternative to Ingress).
+# The Gateway itself is not managed by this chart and is expected to be
+# provisioned separately by the cluster operator.
+gateway:
+  # -- Whether to create HTTPRoute resources or not.
+  enabled: false
+  # -- Hostname the HTTPRoute matches on
+  hostname: dhis2-core.127.0.0.1.nip.io
+  # -- References to the Gateway(s) the HTTPRoute attaches to. See https://gateway-api.sigs.k8s.io/api-types/httproute/#attaching-to-gateways
+  parentRefs:
+    - name: dhis2-gateway
+  # -- HTTP routes configuration
+  routes:
+    main:
+      # -- Path for the main DHIS2 service
+      path: /
+      # -- Service port for the main DHIS2 service
+      servicePort: 8080
+    glowroot:
+      # -- Whether to enable Glowroot HTTP route
+      enabled: false
+      # -- Path for the Glowroot service
+      path: /glowroot
+      # -- Service port for the Glowroot service
+      servicePort: 4000
+
 # KEDA is a Kubernetes-based Event Driven Autoscaling component
 # Only support Nginx ingress controller... Service type: ExternalName
 keda:
