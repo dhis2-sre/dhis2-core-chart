@@ -28,37 +28,30 @@ jobs:
       - name: Get nodes
         run: kubectl get nodes
 
-      - name: Install Helm and Sops
+      - name: Install Helm, Sops and Skaffold
         uses: alexellis/arkade-get@master
         with:
           helm: v3.12.3
           sops: v3.7.3
+          skaffold: v2.6.0
 
       - name: Setup helm secrets plugin
         run: helm plugin install https://github.com/jkroepke/helm-secrets --version v4.6.5
 
-      - name: Setup Skaffold
-        run: |
-          wget https://storage.googleapis.com/skaffold/releases/${VERSION}/${BINARY} -O ./skaffold
-          chmod +x ./skaffold
-        env:
-          VERSION: v2.6.0
-          BINARY: skaffold-linux-amd64
-
       - name: Deploy DHIS2 with FS
         run: |
           cd tests/fs/
-          ./../../skaffold run --status-check --wait-for-deletions
+          skaffold run --status-check --wait-for-deletions
 
       - name: Deploy DHIS2 with MinIO
         run: |
           cd tests/minio/
-          ./../../skaffold run --status-check --wait-for-deletions
+          skaffold run --status-check --wait-for-deletions
 
       - name: Deploy DHIS2 with S3
         run: |
           cd tests/s3/
-          ./../../skaffold run --status-check --wait-for-deletions
+          skaffold run --status-check --wait-for-deletions
 
       - name: Verify endpoints
         env:
