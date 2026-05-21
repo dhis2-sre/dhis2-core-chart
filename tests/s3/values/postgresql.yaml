@@ -1,0 +1,42 @@
+primary:
+  initdb:
+    scripts:
+      seed.sh: |
+        #!/usr/bin/env bash
+
+        set -euo pipefail
+
+        export PGPASSWORD=$POSTGRES_POSTGRES_PASSWORD
+
+        function exec_psql() {
+          psql -U postgres -qAt -d dhis2 -c "$1"
+        }
+
+        SEED_URL="https://databases.dhis2.org/sierra-leone/2.42/dhis2-db-sierra-leone.sql.gz"
+        echo "Seed url: $SEED_URL"
+        tmp_file=$(mktemp)
+        curl --connect-timeout 10 --retry 5 --retry-delay 1 --fail -L "$SEED_URL" > "$tmp_file"
+        gunzip -v -c "$tmp_file" | psql -U postgres -d dhis2
+        rm $tmp_file
+
+        ## Change ownership to dhis
+        # Tables
+        entities=$(exec_psql "select tablename from pg_tables where schemaname = 'public'")
+        for entity in $entities; do
+        echo "Changing owner of $entity to dhis"
+        exec_psql "alter table \"$entity\" owner to dhis"
+        done
+        
+        # Sequences
+        entities=$(exec_psql "select sequence_name from information_schema.sequences where sequence_schema = 'public'")
+        for entity in $entities; do
+        echo "Changing owner of $entity to dhis"
+        exec_psql "alter sequence \"$entity\" owner to dhis"
+        done
+        
+        # Views
+        entities=$(exec_psql "select table_name from information_schema.views where table_schema = 'public'")
+        for entity in $entities; do
+        echo "Changing owner of $entity to dhis"
+        exec_psql "alter view \"$entity\" owner to dhis"
+        done

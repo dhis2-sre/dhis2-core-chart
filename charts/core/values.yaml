@@ -149,6 +149,8 @@ storage:
 #  provider: aws-s3
 #  # -- Container name in the storage service.
 #  container: dhis2
+#  # -- Optional endpoint override (for S3-compatible services). Leave empty for real AWS S3.
+#  endpoint: ""
 #  # -- AWS region or custom location identifier.
 #  location: eu-west-1
 #  # -- Access key ID or similar credential.
