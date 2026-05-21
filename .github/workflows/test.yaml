@@ -28,12 +28,14 @@ jobs:
       - name: Get nodes
         run: kubectl get nodes
 
-      - name: Install Helm, Sops and Skaffold
+      - name: Install Helm and Sops
         uses: alexellis/arkade-get@master
         with:
           helm: v3.12.3
           sops: v3.7.3
-          skaffold: v2.6.0
+
+      - name: Install Skaffold via arkade
+        run: arkade get skaffold --version v2.6.0
 
       - name: Setup helm secrets plugin
         run: helm plugin install https://github.com/jkroepke/helm-secrets --version v4.6.5
