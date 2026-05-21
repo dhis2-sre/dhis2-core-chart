@@ -1,6 +1,6 @@
 # core
 
-![Version: 0.34.8](https://img.shields.io/badge/Version-0.34.8-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
+![Version: 0.34.11](https://img.shields.io/badge/Version-0.34.11-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
 
 DHIS 2 Helm Chart
 
@@ -79,7 +79,7 @@ DHIS 2 Helm Chart
 | keda.scalingMetric.requestRate.window | string | `"30s"` |  |
 | livenessProbe.path | string | `"/"` | Path |
 | livenessProbe.timeoutSeconds | int | `1` | Timeout in seconds |
-| log4j2 | string | `"config/log4j2.xml"` | Path to the log4j2 configuration file. |
+| log4j2 | string | `"config/log4j2.xml"` | Path to the log4j2 configuration file. Set to `config/log4j2-json.xml` for structured JSON logging suitable for log aggregators like Loki. |
 | minReadySeconds | int | `120` | Minimum number of seconds for the pod to be ready before being considered available. |
 | nameOverride | string | `""` | Overrides the chart's default name. |
 | nodeSelector | object | `{}` | Node selector labels that allow pods to be scheduled only onto nodes matching these labels. |
