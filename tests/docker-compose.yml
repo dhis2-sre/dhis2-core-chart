@@ -1,6 +1,6 @@
 services:
   k3s:
-    image: rancher/k3s:v1.31.1-k3s1
+    image: rancher/k3s:v1.33.12-k3s1
     privileged: true
     command: server
     ports:
