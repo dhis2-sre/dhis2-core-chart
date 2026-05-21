@@ -51,7 +51,11 @@ deploy:
         chartPath: ../../charts/core
         setValueTemplates:
           S3:
-            provider: aws-s3
+            # provider is "s3" (generic, endpoint-configurable jclouds provider) rather than
+            # "aws-s3" so that DHIS2 actually honours the endpoint override and talks to the
+            # in-cluster MinIO. Real AWS deployments use provider: aws-s3 and rely on the SDK
+            # to resolve the endpoint, which would need real AWS to test.
+            provider: s3
             container: dhis2
             endpoint: http://dhis2-s3-minio.dhis2.svc:9000
             location: eu-west-1
