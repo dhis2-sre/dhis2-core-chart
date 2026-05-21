@@ -34,11 +34,15 @@ jobs:
           helm: v3.12.3
           sops: v3.7.3
 
-      - name: Install Skaffold via arkade
-        run: arkade get skaffold --version v2.6.0
-
       - name: Setup helm secrets plugin
         run: helm plugin install https://github.com/jkroepke/helm-secrets --version v4.6.5
+
+      - name: Install Skaffold
+        run: |
+          curl -fsSL "https://storage.googleapis.com/skaffold/releases/${VERSION}/skaffold-linux-amd64" -o /tmp/skaffold
+          sudo install -m 0755 /tmp/skaffold /usr/local/bin/skaffold
+        env:
+          VERSION: v2.6.0
 
       - name: Deploy DHIS2 with FS
         run: |
