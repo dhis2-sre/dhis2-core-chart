@@ -3,6 +3,29 @@
 # -- Common labels applied to all Kubernetes resources created by this chart.
 commonLabels: {}
 
+networkPolicy:
+  # -- Whether to enable the NetworkPolicy resource. When enabled, only explicitly allowed traffic is permitted.
+  enabled: false
+  ingress:
+    # -- Selector for the nginx ingress controller pods. Adjust if your ingress controller runs in a different namespace or uses different labels.
+    ingressController:
+      namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: ingress-nginx
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/name: ingress-nginx
+    # -- Namespace selector for the KEDA HTTP add-on interceptor proxy. Only applied when keda.enabled is true.
+    keda:
+      namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: keda
+    # -- Additional custom ingress rules appended to the policy.
+    additionalRules: []
+  egress:
+    # -- Additional custom egress rules appended to the policy. DNS (port 53) and PostgreSQL (port 5432) are always allowed.
+    additionalRules: []
+
 #doris:
 #  hostname: doris.doris.svc
 #  port: 9030
