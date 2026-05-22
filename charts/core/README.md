@@ -73,11 +73,6 @@ DHIS 2 Helm Chart
 | log4j2 | string | `"config/log4j2.xml"` | Path to the log4j2 configuration file. Set to `config/log4j2-json.xml` for structured JSON logging suitable for log aggregators like Loki. |
 | minReadySeconds | int | `120` | Minimum number of seconds for the pod to be ready before being considered available. |
 | nameOverride | string | `""` | Overrides the chart's default name. |
-| networkPolicy.egress.additionalRules | list | `[]` | Additional custom egress rules appended to the policy. DNS (port 53) and PostgreSQL (port 5432) are always allowed. |
-| networkPolicy.enabled | bool | `false` | Whether to enable the NetworkPolicy resource. When enabled, only explicitly allowed traffic is permitted. |
-| networkPolicy.ingress.additionalRules | list | `[]` | Additional custom ingress rules appended to the policy. |
-| networkPolicy.ingress.ingressController | object | `{"namespaceSelector":{"matchLabels":{"kubernetes.io/metadata.name":"ingress-nginx"}},"podSelector":{"matchLabels":{"app.kubernetes.io/name":"ingress-nginx"}}}` | Selector for the nginx ingress controller pods. Adjust if your ingress controller runs in a different namespace or uses different labels. |
-| networkPolicy.ingress.keda | object | `{"namespaceSelector":{"matchLabels":{"kubernetes.io/metadata.name":"keda"}}}` | Namespace selector for the KEDA HTTP add-on interceptor proxy. Only applied when keda.enabled is true. |
 | nodeSelector | object | `{}` | Node selector labels that allow pods to be scheduled only onto nodes matching these labels. |
 | podAnnotations | object | `{}` | Annotations applied to all pods deployed by this chart. |
 | podLabels | object | `{}` | Labels applied to all pods deployed by this chart. |
