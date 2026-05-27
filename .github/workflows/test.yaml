@@ -28,6 +28,48 @@ jobs:
       - name: Get nodes
         run: kubectl get nodes
 
+      - name: Enable Gateway API provider on bundled Traefik
+        run: |
+          cat <<'EOF' | kubectl apply -f -
+          apiVersion: helm.cattle.io/v1
+          kind: HelmChartConfig
+          metadata:
+            name: traefik
+            namespace: kube-system
+          spec:
+            valuesContent: |-
+              providers:
+                kubernetesGateway:
+                  enabled: true
+              gateway:
+                enabled: false
+              gatewayClass:
+                enabled: true
+              rbac:
+                namespaced: false
+          EOF
+
+          # helm-controller reconciles the HelmChartConfig and re-runs helm upgrade
+          for i in {1..60}; do
+            if kubectl get gatewayclass traefik >/dev/null 2>&1; then
+              echo "GatewayClass traefik exists"
+              break
+            fi
+            echo "waiting for GatewayClass traefik..."
+            sleep 5
+          done
+
+          kubectl rollout status -n kube-system deployment/traefik --timeout=180s
+
+          for i in {1..30}; do
+            if [ "$(kubectl get gatewayclass traefik -o jsonpath='{.status.conditions[?(@.type=="Accepted")].status}' 2>/dev/null)" = "True" ]; then
+              echo "GatewayClass traefik accepted"
+              break
+            fi
+            echo "waiting for GatewayClass traefik to be accepted..."
+            sleep 5
+          done
+
       - name: Install Helm and Sops
         uses: alexellis/arkade-get@master
         with:
@@ -45,6 +87,31 @@ jobs:
           VERSION: v2.6.0
           BINARY: skaffold-linux-amd64
 
+      - name: Create shared Gateway for HTTPRoute tests
+        run: |
+          kubectl create namespace dhis2 --dry-run=client -o yaml | kubectl apply -f -
+          cat <<'EOF' | kubectl apply -f -
+          apiVersion: gateway.networking.k8s.io/v1
+          kind: Gateway
+          metadata:
+            name: dhis2-gateway
+            namespace: dhis2
+          spec:
+            gatewayClassName: traefik
+            listeners:
+              - name: http
+                protocol: HTTP
+                port: 8000
+                allowedRoutes:
+                  namespaces:
+                    from: Same
+          EOF
+
+      - name: Deploy DHIS2 with Gateway API
+        run: |
+          cd tests/gateway/
+          ./../../skaffold run --status-check --wait-for-deletions
+
       - name: Deploy DHIS2 with FS
         run: |
           cd tests/fs/
@@ -61,7 +128,7 @@ jobs:
 
       - name: Verify endpoints
         env:
-          ENDPOINTS: "http://dhis2-127-0-0-1.nip.io/fs http://dhis2-127-0-0-1.nip.io/minio"
+          ENDPOINTS: "http://dhis2-127-0-0-1.nip.io/gateway http://dhis2-127-0-0-1.nip.io/fs http://dhis2-127-0-0-1.nip.io/minio"
         run: |
           for url in $ENDPOINTS; do
             echo "🔍 Checking $url"
