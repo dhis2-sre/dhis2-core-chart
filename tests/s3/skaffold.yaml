@@ -1,0 +1,85 @@
+apiVersion: skaffold/v4beta6
+kind: Config
+deploy:
+  statusCheckDeadlineSeconds: 420
+  helm:
+    releases:
+      - name: dhis2-s3-postgresql
+        namespace: dhis2
+        createNamespace: true
+        remoteChart: postgresql
+        repo: https://charts.bitnami.com/bitnami
+        version: 11.9.8
+        valuesFiles:
+          - ./values/postgresql.yaml
+        setValueTemplates:
+          image:
+            repository: dhis2/postgresql-curl
+            pullPolicy: IfNotPresent
+            tag: 17
+          auth:
+            username: dhis
+            password: dhis
+            database: dhis2
+          persistence:
+            size: 5Gi
+
+      - name: dhis2-s3-minio
+        namespace: dhis2
+        createNamespace: true
+        remoteChart: minio
+        repo: https://charts.bitnami.com/bitnami
+        version: 14.7.5
+        setValueTemplates:
+          persistence:
+            annotations:
+              helm\.sh/resource-policy: keep
+          auth:
+            rootUser: dhisdhis
+            rootPassword: dhisdhis
+            forcePassword: true
+          defaultBuckets: dhis2
+          global:
+            security:
+              allowInsecureImages: true
+          image:
+            repository: bitnamilegacy/minio
+
+      - name: dhis2-s3-core
+        namespace: dhis2
+        createNamespace: true
+        chartPath: ../../charts/core
+        setValueTemplates:
+          S3:
+            # provider is "s3" (generic, endpoint-configurable jclouds provider) rather than
+            # "aws-s3" so that DHIS2 actually honours the endpoint override and talks to the
+            # in-cluster MinIO. Real AWS deployments use provider: aws-s3 and rely on the SDK
+            # to resolve the endpoint, which would need real AWS to test.
+            provider: s3
+            container: dhis2
+            endpoint: http://dhis2-s3-minio.dhis2.svc:9000
+            location: eu-west-1
+            identity: dhisdhis
+            secret: dhisdhis
+          database:
+            username: dhis
+            password: dhis
+            database: dhis2
+            hostname: dhis2-s3-postgresql.dhis2.svc
+          ingress:
+            enabled: true
+            hostname: dhis2-127-0-0-1.nip.io
+            path: /s3
+            certIssuer: cert-issuer-prod
+            className: traefik
+          startupProbe:
+            path: /s3
+          livenessProbe:
+            path: /s3
+          readinessProbe:
+            path: /s3
+          contextPath: /s3
+          image:
+            repository: dhis2/core-dev
+            tag: 2.42
+            pullPolicy: Always

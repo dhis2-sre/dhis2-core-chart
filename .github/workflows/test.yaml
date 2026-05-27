@@ -37,31 +37,31 @@ jobs:
       - name: Setup helm secrets plugin
         run: helm plugin install https://github.com/jkroepke/helm-secrets --version v4.6.5
 
-      - name: Setup Skaffold
+      - name: Install Skaffold
         run: |
-          wget https://storage.googleapis.com/skaffold/releases/${VERSION}/${BINARY} -O ./skaffold
-          chmod +x ./skaffold
+          curl -fsSL "https://storage.googleapis.com/skaffold/releases/${VERSION}/skaffold-linux-amd64" -o /tmp/skaffold
+          sudo install -m 0755 /tmp/skaffold /usr/local/bin/skaffold
         env:
           VERSION: v2.6.0
-          BINARY: skaffold-linux-amd64
 
       - name: Deploy DHIS2 with FS
         run: |
           cd tests/fs/
-          ./../../skaffold run --status-check --wait-for-deletions
+          skaffold run --status-check --wait-for-deletions
 
       - name: Deploy DHIS2 with MinIO
         run: |
           cd tests/minio/
-          ./../../skaffold run --status-check --wait-for-deletions
+          skaffold run --status-check --wait-for-deletions
 
       - name: Deploy DHIS2 with S3
         run: |
-          echo TODO!
+          cd tests/s3/
+          skaffold run --status-check --wait-for-deletions
 
       - name: Verify endpoints
         env:
-          ENDPOINTS: "http://dhis2-127-0-0-1.nip.io/fs http://dhis2-127-0-0-1.nip.io/minio"
+          ENDPOINTS: "http://dhis2-127-0-0-1.nip.io/fs http://dhis2-127-0-0-1.nip.io/minio http://dhis2-127-0-0-1.nip.io/s3"
         run: |
           for url in $ENDPOINTS; do
             echo "🔍 Checking $url"
