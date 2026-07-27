@@ -1,4 +1,64 @@
 # This file contains default configuration settings for deploying a DHIS 2 instance using Helm charts.
+# This chart bundles a CloudNativePG PostgreSQL cluster and an optional Bitnami MinIO file store and
+# wires them up itself: database.hostname resolves to the cluster's read-write service, the MinIO
+# endpoint resolves to the MinIO subchart's service, and database credentials are set once under
+# global.postgresql.auth where the cluster's bootstrap and DHIS 2's connection settings pick them
+# up. The file store is selected with storage.type; "minio" also requires minio.enabled=true.
+# The CloudNativePG operator must be installed on the cluster before this chart can deploy.
+
+global:
+  security:
+    # -- Required for the bitnamilegacy minio image repository configured below.
+    allowInsecureImages: true
+  postgresql:
+    auth:
+      # -- Database username shared by the PostgreSQL cluster bootstrap and DHIS 2's connection settings.
+      username: dhis
+      # -- Database password shared by the PostgreSQL cluster secrets and DHIS 2's connection settings.
+      password: dhis
+      # -- Database name shared by the PostgreSQL cluster bootstrap and DHIS 2's connection settings.
+      database: dhis2
+
+postgresql:
+  # -- Deploy a CloudNativePG PostgreSQL cluster. Requires the CloudNativePG operator; disable to bring your own database and set database.hostname.
+  enabled: true
+  # -- Number of PostgreSQL instances (pods) in the cluster.
+  instances: 1
+  # -- PostGIS-enabled operand image; DHIS 2 requires the postgis extension.
+  imageName: ghcr.io/cloudnative-pg/postgis:17-3.5
+  # -- Storage size of each instance.
+  storageSize: 8Gi
+  # -- Storage class for the instance volumes; empty uses the cluster default.
+  storageClass: ""
+  # -- Labels propagated by the operator to every object it creates, including pods.
+  commonLabels: {}
+  # -- Resources of the PostgreSQL containers.
+  resources: {}
+  seed:
+    # -- Run a one-time seed job once the database is ready. The job waits for the database, skips if the dhis2_chart_seed_complete marker table exists, runs the script with superuser PG* environment prepared, then creates the marker. DHIS 2 waits for the marker before starting.
+    enabled: false
+    # -- Image for the seed job and the wait-for-seed init container; needs psql and curl.
+    image: dhis2/postgresql-curl:17
+    # -- Shell script performing the seed.
+    script: ""
+    # -- Extra environment variables for the seed job.
+    extraEnv: []
+
+minio:
+  # -- Deploy the MinIO subchart. Enable together with storage.type=minio.
+  enabled: false
+  auth:
+    # -- MinIO access key, must match minIO.identity.
+    rootUser: dhisdhis
+    # -- MinIO secret key, must match minIO.secret.
+    rootPassword: dhisdhis
+  # -- Bucket created on startup, must match minIO.container.
+  defaultBuckets: dhis2
+  # -- The Bitnami default preset starves the file store under load; no preset is applied and explicit resources should be set instead.
+  resourcesPreset: none
+  image:
+    # -- Bitnami stopped publishing versioned minio images to the bitnami repository; the legacy repository carries them (requires global.security.allowInsecureImages).
+    repository: bitnamilegacy/minio
 
 # -- Common labels applied to all Kubernetes resources created by this chart.
 commonLabels: {}
@@ -86,7 +146,7 @@ googleAuth:
   # -- The OAuth 2.0 Client ID.
   clientId: ""
 
-# Database connection settings. Username, password and database fall back to the Bitnami-style global.postgresql.auth values when set, so the dhis2 umbrella chart's consumers configure credentials once.
+# Database connection settings. Username, password and database fall back to the global.postgresql.auth values above, so credentials are configured once for both the PostgreSQL subchart and DHIS 2.
 database:
   # -- Existing secret containing database credentials
   existingSecret: ""
@@ -101,8 +161,8 @@ database:
   password: dhis
   # -- Name of the database to use.
   database: dhis2
-  # -- Hostname or IP address of the PostgreSQL server. When empty, resolves to <release>-postgresql, the service installed next to this chart by the dhis2 umbrella chart.
-  hostname: dhis2-postgresql.dhis2.svc
+  # -- Hostname or IP address of the PostgreSQL server. When empty, resolves to <release>-postgresql, the service of the bundled PostgreSQL subchart.
+  hostname: ""
 
 # Configuration for session cookies.
 # -- Value can be 'Lax', 'Strict', or 'None'.
@@ -124,27 +184,27 @@ enableQueryLogging: false
 
 # File store configuration. When the type is "minio" or "s3", volumeSize/className are ignored and no pvc is created.
 storage:
-  # -- File store type: "filesystem", "minio" or "s3". When empty, the type is inferred from the presence of the minIO/S3 blocks below for backwards compatibility.
-  type: ""
+  # -- File store type: "filesystem", "minio" or "s3". When "minio", also set minio.enabled=true above.
+  type: filesystem
   # -- Size of the Persistent Volume Claim, e.g., 8Gi for 8 gigabytes.
   volumeSize: 8Gi
   # -- Name of the storage class. It's recommended to update this to a storage class which exists on your cluster. Such as "gp2" on AWS.
   className: ~
 
-## "minIO" and "S3" are mutually exclusive, so make sure to only set one of them
-#minIO:
-#  # -- Provider type, currently only 's3' is supported.
-#  provider: s3
-#  # -- Container name in the storage service.
-#  container: dhis2
-#  # -- Endpoint URL for the MinIO or S3 server.
-#  endpoint: http://dhis2-minio.dhis2.svc:9000
-#  # -- AWS region or custom location identifier.
-#  location: eu-west-1
-#  # -- Access key ID or similar credential.
-#  identity: dhisdhis
-#  # -- Secret access key.
-#  secret: dhisdhis
+# MinIO file store connection settings, only used when storage.type is "minio".
+minIO:
+  # -- Provider type, currently only 's3' is supported.
+  provider: s3
+  # -- Bucket name in the storage service, must match minio.defaultBuckets.
+  container: dhis2
+  # -- Endpoint URL for the MinIO server. When empty, resolves to http://<release>-minio:9000, the service of the bundled MinIO subchart.
+  endpoint: ""
+  # -- AWS region or custom location identifier.
+  location: eu-west-1
+  # -- Access key, must match minio.auth.rootUser.
+  identity: dhisdhis
+  # -- Secret key, must match minio.auth.rootPassword.
+  secret: dhisdhis
 
 #S3:
 #  # -- Provider type, currently only 'aws-s3' is supported.

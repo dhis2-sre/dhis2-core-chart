@@ -1,0 +1,17 @@
+apiVersion: skaffold/v4beta6
+kind: Config
+deploy:
+  statusCheckDeadlineSeconds: 420
+  helm:
+    # The database seed runs as a post-install hook helm waits for; the default 5m timeout is too
+    # tight for the seed import on a busy runner.
+    flags:
+      install: ["--timeout", "15m0s"]
+      upgrade: ["--timeout", "15m0s"]
+    releases:
+      - name: dhis2-umbrella
+        namespace: dhis2
+        createNamespace: true
+        chartPath: ../../charts/dhis2
+        valuesFiles:
+          - ./values/dhis2.yaml

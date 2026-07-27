@@ -26,6 +26,11 @@ jobs:
         with:
           version: v3.8.1
 
+      - name: Build chart dependencies
+        run: |
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm dependency build charts/dhis2
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.7.0
         with:

@@ -1,0 +1,63 @@
+storage:
+  type: minio
+
+minio:
+  enabled: true
+
+ingress:
+  enabled: true
+  hostname: dhis2-127-0-0-1.nip.io
+  path: /dhis2
+  certIssuer: cert-issuer-prod
+  className: traefik
+
+startupProbe:
+  path: /dhis2
+livenessProbe:
+  path: /dhis2
+readinessProbe:
+  path: /dhis2
+contextPath: /dhis2
+
+image:
+  repository: dhis2/core-dev
+  tag: 2.42
+  pullPolicy: Always
+
+postgresql:
+  storageSize: 5Gi
+  seed:
+    enabled: true
+    script: |
+      function exec_psql() {
+        psql -qAt -c "$1"
+      }
+
+      SEED_URL="https://databases.dhis2.org/sierra-leone/2.42/dhis2-db-sierra-leone.sql.gz"
+      echo "Seed url: $SEED_URL"
+      tmp_file=$(mktemp)
+      curl --connect-timeout 10 --retry 5 --retry-delay 1 --fail -L "$SEED_URL" > "$tmp_file"
+      gunzip -v -c "$tmp_file" | psql
+      rm $tmp_file
+
+      ## Change ownership to dhis
+      # Tables
+      entities=$(exec_psql "select tablename from pg_tables where schemaname = 'public'")
+      for entity in $entities; do
+      echo "Changing owner of $entity to dhis"
+      exec_psql "alter table \"$entity\" owner to dhis"
+      done
+
+      # Sequences
+      entities=$(exec_psql "select sequence_name from information_schema.sequences where sequence_schema = 'public'")
+      for entity in $entities; do
+      echo "Changing owner of $entity to dhis"
+      exec_psql "alter sequence \"$entity\" owner to dhis"
+      done
+
+      # Views
+      entities=$(exec_psql "select table_name from information_schema.views where table_schema = 'public'")
+      for entity in $entities; do
+      echo "Changing owner of $entity to dhis"
+      exec_psql "alter view \"$entity\" owner to dhis"
+      done

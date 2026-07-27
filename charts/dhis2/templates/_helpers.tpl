@@ -90,7 +90,7 @@ installed next to this chart by the dhis2 umbrella chart. Username, password and
 back to the Bitnami-style global.postgresql.auth values so umbrella consumers set credentials once.
 */}}
 {{- define "dhis2-core-helm.databaseHostname" -}}
-{{- default (printf "%s-postgresql" .Release.Name) .Values.database.hostname -}}
+{{- default (printf "%s-postgresql-rw" (include "dhis2-core-helm.fullname" .)) .Values.database.hostname -}}
 {{- end }}
 
 {{- define "dhis2-core-helm.databaseUsername" -}}
