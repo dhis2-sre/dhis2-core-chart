@@ -38,7 +38,7 @@ data:
     flyway.migrate_out_of_order = ${FLYWAY_MIGRATE_OUT_OF_ORDER}
     flyway.repair_before_migration = ${FLYWAY_REPAIR_BEFORE_MIGRATION}
     enable.query.logging = ${ENABLE_QUERY_LOGGING}
-    {{- if hasKey .Values "doris" }}
+    {{- if .Values.doris.enabled }}
     analytics.table.unlogged = on
     analytics.table.use_views = off
     analytics.database = doris

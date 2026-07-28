@@ -162,6 +162,18 @@ spec:
             - name: DB_PASSWORD
               value: {{ include "dhis2-core-helm.databasePassword" . | quote }}
 {{- end }}
+{{- if and .Values.doris.enabled .Values.doris.existingSecret }}
+            - name: DORIS_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.doris.existingSecret }}
+                  key: {{ .Values.doris.secretKeys.username }}
+            - name: DORIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.doris.existingSecret }}
+                  key: {{ .Values.doris.secretKeys.password }}
+{{- end }}
           envFrom:
             - secretRef:
                 name: {{ include "dhis2-core-helm.fullname" . }}

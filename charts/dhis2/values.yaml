@@ -63,14 +63,27 @@ minio:
 # -- Common labels applied to all Kubernetes resources created by this chart.
 commonLabels: {}
 
-#doris:
-#  hostname: doris.doris.svc
-#  port: 9030
-#  useSSL: false
-#  database: dhis2
-#  createDatabase: true
-#  username: ""
-#  password: ""
+# Doris analytics database connection. Points at a shared Doris cluster, with each instance using its own database.
+doris:
+  # -- Whether to use Doris as the analytics database.
+  enabled: false
+  # -- Hostname of the Doris frontend (MySQL protocol).
+  hostname: ""
+  port: 9030
+  useSSL: false
+  # -- Name of the Doris database for this instance.
+  database: ""
+  # -- Create the database on install and drop it on uninstall.
+  createDatabase: true
+  # -- Doris username. Ignored when existingSecret is set.
+  username: ""
+  # -- Doris password. Ignored when existingSecret is set.
+  password: ""
+  # -- Existing secret with the Doris credentials.
+  existingSecret: ""
+  secretKeys:
+    username: username
+    password: password
 
 glowroot:
   # -- Whether to enable Glowroot or not.

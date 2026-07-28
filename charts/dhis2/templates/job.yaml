@@ -119,7 +119,7 @@ spec:
 
 ---
 
-{{- if and (hasKey .Values "doris") .Values.doris.createDatabase }}
+{{- if and .Values.doris.enabled .Values.doris.createDatabase }}
 {{- if not .Values.doris.database }}
 {{- fail "doris.database is required when createDatabase is true" }}
 {{- end }}
@@ -148,4 +148,31 @@ spec:
             - -uroot
             - -e
             - "CREATE DATABASE IF NOT EXISTS {{ .Values.doris.database }}"
+
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ include "dhis2-core-helm.fullname" . }}-drop-doris-database"
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: drop-doris-database
+          image: mysql:8.0
+          command:
+            - mysql
+            - -h
+            - {{ .Values.doris.hostname }}
+            - -P
+            - {{ .Values.doris.port | quote }}
+            - -uroot
+            - -e
+            - "DROP DATABASE IF EXISTS {{ .Values.doris.database }}"
 {{- end }}

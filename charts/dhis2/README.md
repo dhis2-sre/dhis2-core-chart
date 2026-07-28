@@ -29,6 +29,17 @@ DHIS 2 Helm chart bundling a CloudNativePG PostgreSQL cluster and an optional Mi
 | database.secretKeys.username | string | `"username"` | Optional: Key for username in the secret. If empty, uses the plain username value |
 | database.username | string | `"dhis"` | Default database username. |
 | dhis2Home | string | `"/opt/dhis2"` | DHIS 2 home directory. |
+| doris.createDatabase | bool | `true` | Create the database on install and drop it on uninstall. |
+| doris.database | string | `""` | Name of the Doris database for this instance. |
+| doris.enabled | bool | `false` | Whether to use Doris as the analytics database. |
+| doris.existingSecret | string | `""` | Existing secret with the Doris credentials. |
+| doris.hostname | string | `""` | Hostname of the Doris frontend (MySQL protocol). |
+| doris.password | string | `""` | Doris password. Ignored when existingSecret is set. |
+| doris.port | int | `9030` |  |
+| doris.secretKeys.password | string | `"password"` |  |
+| doris.secretKeys.username | string | `"username"` |  |
+| doris.useSSL | bool | `false` |  |
+| doris.username | string | `""` | Doris username. Ignored when existingSecret is set. |
 | enableQueryLogging | bool | `false` | Enable SQL query logging |
 | flyway.migrateOutOfOrder | bool | `false` | Allow out-of-order migrations |
 | flyway.repairBeforeMigration | bool | `false` | Repair before migrations |
