@@ -75,9 +75,9 @@ doris:
   database: ""
   # -- Create the database on install and drop it on uninstall.
   createDatabase: true
-  # -- Doris username. Ignored when existingSecret is set.
+  # -- Doris username for DHIS 2, created with the required grants by the create-database job when createDatabase is true. Ignored when existingSecret is set.
   username: ""
-  # -- Doris password. Ignored when existingSecret is set.
+  # -- Doris password. Required when doris.enabled is true unless existingSecret is set.
   password: ""
   # -- Existing secret with the Doris credentials.
   existingSecret: ""

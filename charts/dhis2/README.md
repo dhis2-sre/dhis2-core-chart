@@ -35,12 +35,12 @@ DHIS 2 Helm chart bundling a CloudNativePG PostgreSQL cluster, an optional MinIO
 | doris.enabled | bool | `false` | Whether to use Doris as the analytics database. |
 | doris.existingSecret | string | `""` | Existing secret with the Doris credentials. |
 | doris.hostname | string | `""` | Hostname of the Doris frontend (MySQL protocol). |
-| doris.password | string | `""` | Doris password. Ignored when existingSecret is set. |
+| doris.password | string | `""` | Doris password. Required when doris.enabled is true unless existingSecret is set. |
 | doris.port | int | `9030` |  |
 | doris.secretKeys.password | string | `"password"` |  |
 | doris.secretKeys.username | string | `"username"` |  |
 | doris.useSSL | bool | `false` |  |
-| doris.username | string | `""` | Doris username. Ignored when existingSecret is set. |
+| doris.username | string | `""` | Doris username for DHIS 2, created with the required grants by the create-database job when createDatabase is true. Ignored when existingSecret is set. |
 | dorisCluster.beSpec.replicas | int | `1` |  |
 | dorisCluster.beSpec.resource.limits.cpu | string | `"4"` |  |
 | dorisCluster.beSpec.resource.limits.memory | string | `"8Gi"` |  |

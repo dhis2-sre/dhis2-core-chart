@@ -128,7 +128,7 @@ kind: Job
 metadata:
   name: "{{ include "dhis2-core-helm.fullname" . }}-create-doris-database"
   annotations:
-    "helm.sh/hook": post-install
+    "helm.sh/hook": post-install,post-upgrade
     "helm.sh/hook-weight": "1"
     "helm.sh/hook-delete-policy": before-hook-creation
 spec:
@@ -140,6 +140,25 @@ spec:
       containers:
         - name: create-doris-database
           image: mysql:8.0
+          env:
+{{- if .Values.doris.existingSecret }}
+            - name: DORIS_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.doris.existingSecret }}
+                  key: {{ .Values.doris.secretKeys.username }}
+            - name: DORIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.doris.existingSecret }}
+                  key: {{ .Values.doris.secretKeys.password }}
+{{- else }}
+            - name: DORIS_USERNAME
+              value: {{ .Values.doris.username | quote }}
+            - name: DORIS_PASSWORD
+              value: {{ .Values.doris.password | quote }}
+{{- end }}
+          # ADMIN_PRIV because DHIS 2 creates a JDBC catalog against the PostgreSQL database on startup.
           command:
             - /bin/sh
             - -c
@@ -148,6 +167,7 @@ spec:
                 echo "Doris is not ready yet, retrying in 10s"
                 sleep 10
               done
+              mysql -h {{ include "dhis2-core-helm.dorisHostname" . }} -P {{ .Values.doris.port }} -uroot -e "CREATE USER IF NOT EXISTS '${DORIS_USERNAME}'@'%' IDENTIFIED BY '${DORIS_PASSWORD}'; GRANT ADMIN_PRIV ON *.* TO '${DORIS_USERNAME}'@'%';"
 
 ---
 
