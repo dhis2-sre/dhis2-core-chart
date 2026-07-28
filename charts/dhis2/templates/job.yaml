@@ -133,6 +133,7 @@ metadata:
     "helm.sh/hook-delete-policy": before-hook-creation
 spec:
   ttlSecondsAfterFinished: 300
+  activeDeadlineSeconds: 1200
   template:
     spec:
       restartPolicy: OnFailure
@@ -140,14 +141,13 @@ spec:
         - name: create-doris-database
           image: mysql:8.0
           command:
-            - mysql
-            - -h
-            - {{ include "dhis2-core-helm.dorisHostname" . }}
-            - -P
-            - {{ .Values.doris.port | quote }}
-            - -uroot
-            - -e
-            - "CREATE DATABASE IF NOT EXISTS {{ .Values.doris.database }}"
+            - /bin/sh
+            - -c
+            - |
+              until mysql -h {{ include "dhis2-core-helm.dorisHostname" . }} -P {{ .Values.doris.port }} -uroot -e "CREATE DATABASE IF NOT EXISTS {{ .Values.doris.database }}"; do
+                echo "Doris is not ready yet, retrying in 10s"
+                sleep 10
+              done
 
 ---
 
@@ -166,13 +166,18 @@ spec:
       containers:
         - name: drop-doris-database
           image: mysql:8.0
+          # Best effort: an unreachable Doris must not block uninstall, and the analytics database
+          # is derived data that can be regenerated.
           command:
-            - mysql
-            - -h
-            - {{ include "dhis2-core-helm.dorisHostname" . }}
-            - -P
-            - {{ .Values.doris.port | quote }}
-            - -uroot
-            - -e
-            - "DROP DATABASE IF EXISTS {{ .Values.doris.database }}"
+            - /bin/sh
+            - -c
+            - |
+              for i in $(seq 1 12); do
+                if mysql -h {{ include "dhis2-core-helm.dorisHostname" . }} -P {{ .Values.doris.port }} -uroot -e "DROP DATABASE IF EXISTS {{ .Values.doris.database }}"; then
+                  exit 0
+                fi
+                echo "Doris is not reachable, retrying in 5s"
+                sleep 5
+              done
+              echo "Could not drop database {{ .Values.doris.database }}, continuing with uninstall"
 {{- end }}

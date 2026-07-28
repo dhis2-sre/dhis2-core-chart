@@ -42,9 +42,17 @@ DHIS 2 Helm chart bundling a CloudNativePG PostgreSQL cluster, an optional MinIO
 | doris.useSSL | bool | `false` |  |
 | doris.username | string | `""` | Doris username. Ignored when existingSecret is set. |
 | dorisCluster.beSpec.replicas | int | `1` |  |
+| dorisCluster.beSpec.resource.limits.cpu | string | `"4"` |  |
+| dorisCluster.beSpec.resource.limits.memory | string | `"8Gi"` |  |
+| dorisCluster.beSpec.resource.requests.cpu | string | `"1"` |  |
+| dorisCluster.beSpec.resource.requests.memory | string | `"4Gi"` |  |
 | dorisCluster.dorisCluster.name | string | `"dhis2-doris"` | Name of the DorisCluster resource, must be unique per namespace. |
 | dorisCluster.enabled | bool | `false` |  |
 | dorisCluster.feSpec.replicas | int | `1` |  |
+| dorisCluster.feSpec.resource.limits.cpu | string | `"4"` |  |
+| dorisCluster.feSpec.resource.limits.memory | string | `"8Gi"` |  |
+| dorisCluster.feSpec.resource.requests.cpu | string | `"1"` |  |
+| dorisCluster.feSpec.resource.requests.memory | string | `"4Gi"` |  |
 | enableQueryLogging | bool | `false` | Enable SQL query logging |
 | flyway.migrateOutOfOrder | bool | `false` | Allow out-of-order migrations |
 | flyway.repairBeforeMigration | bool | `false` | Repair before migrations |

@@ -94,10 +94,27 @@ dorisCluster:
   dorisCluster:
     # -- Name of the DorisCluster resource, must be unique per namespace.
     name: dhis2-doris
+  # The upstream defaults request 8 CPU / 16Gi per component, which does not schedule on typical
+  # nodes; these are sized for a self-contained deployment, raise them for production workloads.
+  # Note: the upstream chart uses the singular `resource` key.
   feSpec:
     replicas: 1
+    resource:
+      requests:
+        cpu: "1"
+        memory: 4Gi
+      limits:
+        cpu: "4"
+        memory: 8Gi
   beSpec:
     replicas: 1
+    resource:
+      requests:
+        cpu: "1"
+        memory: 4Gi
+      limits:
+        cpu: "4"
+        memory: 8Gi
 
 glowroot:
   # -- Whether to enable Glowroot or not.
