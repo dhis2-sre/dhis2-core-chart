@@ -85,6 +85,20 @@ doris:
     username: username
     password: password
 
+# Bundled Apache Doris cluster deployed next to this chart, as an alternative to the shared cluster
+# doris.hostname points at. Requires the doris-operator to be installed on the cluster. When
+# enabled, an empty doris.hostname resolves to the bundled cluster's frontend service.
+# See https://artifacthub.io/packages/helm/doris/doris for all options.
+dorisCluster:
+  enabled: false
+  dorisCluster:
+    # -- Name of the DorisCluster resource, must be unique per namespace.
+    name: dhis2-doris
+  feSpec:
+    replicas: 1
+  beSpec:
+    replicas: 1
+
 glowroot:
   # -- Whether to enable Glowroot or not.
   enabled: false

@@ -2,13 +2,14 @@
 
 ![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
 
-DHIS 2 Helm chart bundling a CloudNativePG PostgreSQL cluster and an optional MinIO file store
+DHIS 2 Helm chart bundling a CloudNativePG PostgreSQL cluster, an optional MinIO file store and an optional Doris analytics cluster
 
 ## Requirements
 
 | Repository | Name | Version |
 |------------|------|---------|
 | https://charts.bitnami.com/bitnami | minio | 14.7.5 |
+| https://charts.selectdb.com | dorisCluster(doris) | 25.8.0 |
 
 ## Values
 
@@ -40,6 +41,10 @@ DHIS 2 Helm chart bundling a CloudNativePG PostgreSQL cluster and an optional Mi
 | doris.secretKeys.username | string | `"username"` |  |
 | doris.useSSL | bool | `false` |  |
 | doris.username | string | `""` | Doris username. Ignored when existingSecret is set. |
+| dorisCluster.beSpec.replicas | int | `1` |  |
+| dorisCluster.dorisCluster.name | string | `"dhis2-doris"` | Name of the DorisCluster resource, must be unique per namespace. |
+| dorisCluster.enabled | bool | `false` |  |
+| dorisCluster.feSpec.replicas | int | `1` |  |
 | enableQueryLogging | bool | `false` | Enable SQL query logging |
 | flyway.migrateOutOfOrder | bool | `false` | Allow out-of-order migrations |
 | flyway.repairBeforeMigration | bool | `false` | Repair before migrations |

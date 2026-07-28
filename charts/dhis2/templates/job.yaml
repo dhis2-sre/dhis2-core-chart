@@ -142,7 +142,7 @@ spec:
           command:
             - mysql
             - -h
-            - {{ .Values.doris.hostname }}
+            - {{ include "dhis2-core-helm.dorisHostname" . }}
             - -P
             - {{ .Values.doris.port | quote }}
             - -uroot
@@ -169,7 +169,7 @@ spec:
           command:
             - mysql
             - -h
-            - {{ .Values.doris.hostname }}
+            - {{ include "dhis2-core-helm.dorisHostname" . }}
             - -P
             - {{ .Values.doris.port | quote }}
             - -uroot

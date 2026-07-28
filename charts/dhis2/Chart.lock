@@ -2,5 +2,8 @@ dependencies:
 - name: minio
   repository: https://charts.bitnami.com/bitnami
   version: 14.7.5
-digest: sha256:5cf557f3dfee7d96be9ee12b0ea44f5189d81e78a23726aa40a5dc2532801f42
-generated: "2026-07-28T21:47:59.882650327+02:00"
+- name: doris
+  repository: https://charts.selectdb.com
+  version: 25.8.0
+digest: sha256:b601b950fddb4420d9476eb919de430911b192ae419ef86e1adb35bec2cd0a46
+generated: "2026-07-28T22:52:50.26037785+02:00"

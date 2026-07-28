@@ -112,3 +112,17 @@ by the dhis2 umbrella chart.
 {{- define "dhis2-core-helm.minioEndpoint" -}}
 {{- default (printf "http://%s-minio:9000" .Release.Name) .Values.minIO.endpoint -}}
 {{- end }}
+
+{{/*
+Doris hostname. An empty doris.hostname resolves to the frontend service of the Doris cluster
+installed next to this chart when the bundled dorisCluster is enabled.
+*/}}
+{{- define "dhis2-core-helm.dorisHostname" -}}
+{{- if .Values.doris.hostname -}}
+{{- .Values.doris.hostname -}}
+{{- else if .Values.dorisCluster.enabled -}}
+{{- printf "%s-fe-service" .Values.dorisCluster.dorisCluster.name -}}
+{{- else -}}
+{{- required "doris.hostname is required when doris.enabled is true and dorisCluster.enabled is false" .Values.doris.hostname -}}
+{{- end -}}
+{{- end }}
