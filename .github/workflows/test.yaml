@@ -37,8 +37,10 @@ jobs:
       - name: Setup helm secrets plugin
         run: helm plugin install https://github.com/jkroepke/helm-secrets --version v4.6.5
 
-      - name: Add bitnami helm repository
-        run: helm repo add bitnami https://charts.bitnami.com/bitnami
+      - name: Add helm repositories
+        run: |
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm repo add selectdb https://charts.selectdb.com
 
       - name: Install CloudNativePG operator
         run: |
