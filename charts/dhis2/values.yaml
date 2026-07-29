@@ -73,7 +73,7 @@ doris:
   useSSL: false
   # -- Name of the Doris database for this instance.
   database: ""
-  # -- Create the database on install and drop it on uninstall.
+  # -- Create the database and user on install and drop the database on uninstall. Provisioning connects as passwordless root, intended for the bundled dorisCluster below; for a shared Doris cluster set this to false and provide pre-provisioned credentials via existingSecret.
   createDatabase: true
   # -- Doris username for DHIS 2, created with the required grants by the create-database job when createDatabase is true. Ignored when existingSecret is set.
   username: ""
@@ -84,7 +84,7 @@ doris:
   secretKeys:
     username: username
     password: password
-  # -- PostgreSQL JDBC driver for the Doris JDBC catalog DHIS 2 creates on startup. Doris downloads the driver from this URL; set to a bare filename (e.g. postgresql.jar) if the driver is pre-installed in the Doris jdbc_drivers directory instead.
+  # -- PostgreSQL JDBC driver for the Doris JDBC catalog DHIS 2 creates on startup. For production, prefer a driver pre-installed in the Doris image's jdbc_drivers directory and set a bare filename (e.g. postgresql.jar); the URL default makes Doris download the driver from the internet at runtime, which fails in air-gapped clusters.
   driverFilename: https://jdbc.postgresql.org/download/postgresql-42.7.7.jar
 
 # Bundled Apache Doris cluster deployed next to this chart, as an alternative to the shared cluster

@@ -30,9 +30,9 @@ DHIS 2 Helm chart bundling a CloudNativePG PostgreSQL cluster, an optional MinIO
 | database.secretKeys.username | string | `"username"` | Optional: Key for username in the secret. If empty, uses the plain username value |
 | database.username | string | `"dhis"` | Default database username. |
 | dhis2Home | string | `"/opt/dhis2"` | DHIS 2 home directory. |
-| doris.createDatabase | bool | `true` | Create the database on install and drop it on uninstall. |
+| doris.createDatabase | bool | `true` | Create the database and user on install and drop the database on uninstall. Provisioning connects as passwordless root, intended for the bundled dorisCluster below; for a shared Doris cluster set this to false and provide pre-provisioned credentials via existingSecret. |
 | doris.database | string | `""` | Name of the Doris database for this instance. |
-| doris.driverFilename | string | `"https://jdbc.postgresql.org/download/postgresql-42.7.7.jar"` | PostgreSQL JDBC driver for the Doris JDBC catalog DHIS 2 creates on startup. Doris downloads the driver from this URL; set to a bare filename (e.g. postgresql.jar) if the driver is pre-installed in the Doris jdbc_drivers directory instead. |
+| doris.driverFilename | string | `"https://jdbc.postgresql.org/download/postgresql-42.7.7.jar"` | PostgreSQL JDBC driver for the Doris JDBC catalog DHIS 2 creates on startup. For production, prefer a driver pre-installed in the Doris image's jdbc_drivers directory and set a bare filename (e.g. postgresql.jar); the URL default makes Doris download the driver from the internet at runtime, which fails in air-gapped clusters. |
 | doris.enabled | bool | `false` | Whether to use Doris as the analytics database. |
 | doris.existingSecret | string | `""` | Existing secret with the Doris credentials. |
 | doris.hostname | string | `""` | Hostname of the Doris frontend (MySQL protocol). |
