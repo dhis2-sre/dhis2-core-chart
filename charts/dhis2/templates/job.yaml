@@ -163,11 +163,13 @@ spec:
             - /bin/sh
             - -c
             - |
+              set -e
               until mysql -h {{ include "dhis2-core-helm.dorisHostname" . }} -P {{ .Values.doris.port }} -uroot -e "CREATE DATABASE IF NOT EXISTS {{ .Values.doris.database }}"; do
                 echo "Doris is not ready yet, retrying in 10s"
                 sleep 10
               done
-              mysql -h {{ include "dhis2-core-helm.dorisHostname" . }} -P {{ .Values.doris.port }} -uroot -e "CREATE USER IF NOT EXISTS '${DORIS_USERNAME}'@'%' IDENTIFIED BY '${DORIS_PASSWORD}'; GRANT ADMIN_PRIV ON *.* TO '${DORIS_USERNAME}'@'%';"
+              mysql -h {{ include "dhis2-core-helm.dorisHostname" . }} -P {{ .Values.doris.port }} -uroot -e "CREATE USER IF NOT EXISTS '${DORIS_USERNAME}'@'%' IDENTIFIED BY '${DORIS_PASSWORD}'"
+              mysql -h {{ include "dhis2-core-helm.dorisHostname" . }} -P {{ .Values.doris.port }} -uroot -e "GRANT ADMIN_PRIV ON *.*.* TO '${DORIS_USERNAME}'@'%'"
 
 ---
 
