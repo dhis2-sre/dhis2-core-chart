@@ -1,14 +1,20 @@
-# DHIS2 Core Helm Chart
+# DHIS2 Helm Chart
+
+This repository contains the [dhis2](./charts/dhis2) Helm chart, which deploys DHIS 2 together with a CloudNativePG PostgreSQL cluster, an optional MinIO file store and an optional Doris analytics cluster.
+
+The previous per-component `core` chart has been removed; its released versions remain available through the chart repository index for deployments pinned to them.
 
 ## Documentation
 
-The documentation for the chart properties can be found [here](./charts/core/README.md) and is generated using [helm-docs](https://github.com/norwoodj/helm-docs).
+The documentation for the chart properties can be found [here](./charts/dhis2/README.md) and is generated using [helm-docs](https://github.com/norwoodj/helm-docs).
 
 ## Configuration
 
 Ensure the `KUBECONFIG` environment variable is pointing to a valid Kubernetes configuration file.
 
 If you don't have a cluster available, one can be created using [this](https://github.com/dhis2-sre/im-cluster) project.
+
+The CloudNativePG operator must be installed on the cluster before the chart can deploy.
 
 ## Launch
 
@@ -17,38 +23,34 @@ skaffold dev
 ```
 
 ## Launch with MinIO
-* Uncomment the minio section in dhis2.yaml
-* Uncomment the minio section in skaffold.yaml
+
+Set `storage.type: minio` and `minio.enabled: true` in [values/dhis2.yaml](./values/dhis2.yaml).
 
 ## Helm
 
-[DHIS2 core helm chart](./charts/core) is published to
-https://dhis2-sre.github.io/dhis2-core-helm
+The [dhis2 helm chart](./charts/dhis2) is published to
+https://dhis2-sre.github.io/dhis2-core-chart
 
 To install the chart you first need to add this chart repository
 
 ```sh
 helm repo add dhis2 https://dhis2-sre.github.io/dhis2-core-chart
 helm repo update
-helm search repo dhis2/core --versions
+helm search repo dhis2/dhis2 --versions
 ```
 
 The versions returned are gathered from [index.yaml](./index.yaml) which is
-published to [this GitHub page](https://dhis2-sre.github.io/dhis2-core-helm/index.yaml).
-
-## Storage Class
-
-The storage class used by the chart is defined as `~`. This means that the default storage class will be used. However, since the pvc is an immutable resource, it cannot be changed after creation. Thus trying to update the chart is likely to fail. This can be prevented by setting the storage class to the actual storage class used by the cluster, e.g. `gp2` for EKS. Please see the `storage.className` property in the values.yaml file of this chart for more information.
+published to [this GitHub page](https://dhis2-sre.github.io/dhis2-core-chart/index.yaml).
 
 ### Release
 
-Bump the version in [Chart.yaml](./charts/core/Chart.yaml), commit and push.
+Bump the version in [Chart.yaml](./charts/dhis2/Chart.yaml), commit and push.
 **NOTE: do not create a tag yourself!**
 
 Our release workflow will then using [Helm chart releaser action](https://github.com/helm/chart-releaser-action)
 
-* create a tag `core-<version>`
-* create a [release](https://github.com/dhis2-sre/dhis2-core-helm/releases) associated with the new tag
+* create a tag `dhis2-<version>`
+* create a [release](https://github.com/dhis2-sre/dhis2-core-chart/releases) associated with the new tag
 * commit an updated index.yaml with the new release
 * redeploy the GitHub pages to serve the new index.yaml
 

@@ -1,17 +1,6 @@
-#minIO:
-#  provider: s3
-#  container: dhis2
-#  endpoint: http://dhis2-minio.dhis2.svc:9000
-#  location: eu-west-1
-#  identity: dhisdhis
-#  secret: dhisdhis
-
-#S3:
-#  provider: aws-s3
-#  container: dhis2
-#  location: eu-west-1
-#  identity: dhisdhis
-#  secret: dhisdhis
+# The chart bundles its own PostgreSQL cluster and wires the connection itself.
+# For a MinIO file store set storage.type=minio and minio.enabled=true; for S3 set storage.type=s3
+# and fill in the S3 block. See charts/dhis2/values.yaml for all options.
 
 #WARNING: You need to add "--add-opens=java.base/java.lang=ALL-UNNAMED" to the JVM command line arguments to enable ThreadLocal memory leak detection. Alternatively, you can suppress this warning by disabling ThreadLocal memory leak detection.
 #WARNING: You need to add "--add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED" to the JVM command line arguments to enable RMI Target memory leak detection. Alternatively, you can suppress this warning by disabling RMI Target memory leak detection.

@@ -1,0 +1,39 @@
+# Shared by all test stacks and the root skaffold.yaml: seeds the bundled PostgreSQL cluster with
+# the Sierra Leone demo database.
+postgresql:
+  storageSize: 5Gi
+  seed:
+    enabled: true
+    script: |
+      function exec_psql() {
+        psql -qAt -c "$1"
+      }
+
+      SEED_URL="https://databases.dhis2.org/sierra-leone/2.42/dhis2-db-sierra-leone.sql.gz"
+      echo "Seed url: $SEED_URL"
+      tmp_file=$(mktemp)
+      curl --connect-timeout 10 --retry 5 --retry-delay 1 --fail -L "$SEED_URL" > "$tmp_file"
+      gunzip -v -c "$tmp_file" | psql
+      rm $tmp_file
+
+      ## Change ownership to dhis
+      # Tables
+      entities=$(exec_psql "select tablename from pg_tables where schemaname = 'public'")
+      for entity in $entities; do
+      echo "Changing owner of $entity to dhis"
+      exec_psql "alter table \"$entity\" owner to dhis"
+      done
+
+      # Sequences
+      entities=$(exec_psql "select sequence_name from information_schema.sequences where sequence_schema = 'public'")
+      for entity in $entities; do
+      echo "Changing owner of $entity to dhis"
+      exec_psql "alter sequence \"$entity\" owner to dhis"
+      done
+
+      # Views
+      entities=$(exec_psql "select table_name from information_schema.views where table_schema = 'public'")
+      for entity in $entities; do
+      echo "Changing owner of $entity to dhis"
+      exec_psql "alter view \"$entity\" owner to dhis"
+      done

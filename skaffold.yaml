@@ -3,62 +3,33 @@ kind: Config
 deploy:
   statusCheckDeadlineSeconds: 420
   helm:
+    # The database seed runs as a post-install hook helm waits for; the default 5m timeout is too
+    # tight for the seed import.
+    flags:
+      install: ["--timeout", "15m0s"]
+      upgrade: ["--timeout", "15m0s"]
     releases:
-      - name: dhis2-postgresql
+      - name: dhis2
         namespace: dhis2
         createNamespace: true
-        remoteChart: postgresql
-        repo: https://charts.bitnami.com/bitnami
-        version: 11.9.8
+        chartPath: charts/dhis2
         valuesFiles:
-          - ./values/postgresql.yaml
-
-#      - name: dhis2-minio
-#        namespace: dhis2
-#        createNamespace: true
-#        remoteChart: minio
-#        repo: https://charts.bitnami.com/bitnami
-#        version: 14.7.5
-#        useHelmSecrets: true
-#        valuesFiles:
-#          - ./values/minio.yaml
-
-      - name: dhis2-core
-        namespace: dhis2
-        createNamespace: true
-        chartPath: charts/core
-        valuesFiles:
+          - ./tests/seed.yaml
           - ./values/dhis2.yaml
         setValueTemplates:
           ingress:
             enabled: true
             hostname: dhis2.im-feat.dhis2.org
-            path: /core
+            path: /dhis2
             certIssuer: cert-issuer-prod
           startupProbe:
-            path: /core
+            path: /dhis2
           livenessProbe:
-            path: /core
+            path: /dhis2
           readinessProbe:
-            path: /core
-          contextPath: /core
+            path: /dhis2
+          contextPath: /dhis2
           image:
             repository: dhis2/core-dev
             tag: 2.42
             pullPolicy: Always
-
-# Use existing secret created by the Bitnami Postgresql chart
-          database:
-            existingSecret: dhis2-postgresql
-            secretKeys:
-              username: ""
-              password: password
-
-## Enable MinIO (remember to also deploy the MinIO chart above)
-#          minIO:
-#            provider: s3
-#            container: dhis2
-#            endpoint: http://dhis2-minio.dhis2.svc:9000
-#            location: eu-west-1
-#            identity: dhisdhis
-#            secret: dhisdhis

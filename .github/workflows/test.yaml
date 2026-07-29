@@ -37,6 +37,16 @@ jobs:
       - name: Setup helm secrets plugin
         run: helm plugin install https://github.com/jkroepke/helm-secrets --version v4.6.5
 
+      - name: Add helm repositories
+        run: |
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm repo add selectdb https://charts.selectdb.com
+
+      - name: Install CloudNativePG operator
+        run: |
+          helm repo add cnpg https://cloudnative-pg.github.io/charts
+          helm upgrade --install cnpg cnpg/cloudnative-pg --namespace cnpg-system --create-namespace --wait
+
       - name: Install Skaffold
         run: |
           curl -fsSL "https://storage.googleapis.com/skaffold/releases/${VERSION}/skaffold-linux-amd64" -o /tmp/skaffold
@@ -49,19 +59,19 @@ jobs:
           cd tests/fs/
           skaffold run --status-check --wait-for-deletions
 
-      - name: Deploy DHIS2 with MinIO
-        run: |
-          cd tests/minio/
-          skaffold run --status-check --wait-for-deletions
-
       - name: Deploy DHIS2 with S3
         run: |
           cd tests/s3/
           skaffold run --status-check --wait-for-deletions
 
+      - name: Deploy DHIS2 with MinIO via the dhis2 chart
+        run: |
+          cd tests/dhis2/
+          skaffold run --status-check --wait-for-deletions
+
       - name: Verify endpoints
         env:
-          ENDPOINTS: "http://dhis2-127-0-0-1.nip.io/fs http://dhis2-127-0-0-1.nip.io/minio http://dhis2-127-0-0-1.nip.io/s3"
+          ENDPOINTS: "http://dhis2-127-0-0-1.nip.io/fs http://dhis2-127-0-0-1.nip.io/s3 http://dhis2-127-0-0-1.nip.io/dhis2"
         run: |
           for url in $ENDPOINTS; do
             echo "🔍 Checking $url"

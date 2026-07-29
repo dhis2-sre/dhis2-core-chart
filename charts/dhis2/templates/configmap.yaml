@@ -19,7 +19,7 @@ data:
     server.https = {{ if .Values.ingress.certIssuer }}true{{ else }}false{{ end }}
     {{- end }}
     session.cookie.samesite = {{ .Values.sessionCookieSameSite }}
-    {{- if hasKey .Values "minIO" }}
+    {{- if eq (include "dhis2-core-helm.storageType" .) "minio" }}
     filestore.provider = ${MINIO_PROVIDER}
     filestore.container = ${MINIO_CONTAINER}
     filestore.endpoint = ${MINIO_ENDPOINT}
@@ -27,7 +27,7 @@ data:
     filestore.identity = ${MINIO_IDENTITY}
     filestore.secret = ${MINIO_SECRET}
     {{- end }}
-    {{- if hasKey .Values "S3" }}
+    {{- if eq (include "dhis2-core-helm.storageType" .) "s3" }}
     filestore.provider = ${S3_PROVIDER}
     filestore.container = ${S3_CONTAINER}
     filestore.endpoint = ${S3_ENDPOINT}
@@ -38,10 +38,11 @@ data:
     flyway.migrate_out_of_order = ${FLYWAY_MIGRATE_OUT_OF_ORDER}
     flyway.repair_before_migration = ${FLYWAY_REPAIR_BEFORE_MIGRATION}
     enable.query.logging = ${ENABLE_QUERY_LOGGING}
-    {{- if hasKey .Values "doris" }}
+    {{- if .Values.doris.enabled }}
     analytics.table.unlogged = on
     analytics.table.use_views = off
     analytics.database = doris
+    analytics.database.driver_filename = {{ .Values.doris.driverFilename }}
     analytics.connection.url = jdbc:mysql://${DORIS_HOSTNAME}:${DORIS_PORT}/${DORIS_DATABASE}?useUnicode=true&characterEncoding=UTF-8&useSSL=${DORIS_USE_SSL}
     analytics.connection.username = ${DORIS_USERNAME}
     analytics.connection.password = ${DORIS_PASSWORD}

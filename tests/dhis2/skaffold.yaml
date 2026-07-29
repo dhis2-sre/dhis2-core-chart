@@ -9,7 +9,7 @@ deploy:
       install: ["--timeout", "15m0s"]
       upgrade: ["--timeout", "15m0s"]
     releases:
-      - name: dhis2-fs
+      - name: dhis2-umbrella
         namespace: dhis2
         createNamespace: true
         chartPath: ../../charts/dhis2

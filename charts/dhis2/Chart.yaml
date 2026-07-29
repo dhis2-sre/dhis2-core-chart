@@ -1,6 +1,6 @@
 apiVersion: v2
-name: core
-description: DHIS 2 Helm Chart
+name: dhis2
+description: DHIS 2 Helm chart bundling a CloudNativePG PostgreSQL cluster, an optional MinIO file store and an optional Doris analytics cluster
 
 # A chart can be either an 'application' or a 'library' chart.
 #
@@ -15,10 +15,21 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.34.11
+version: 1.0.0
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
 appVersion: "1.16.0"
+
+dependencies:
+  - name: minio
+    version: 14.7.5
+    repository: https://charts.bitnami.com/bitnami
+    condition: minio.enabled
+  - name: doris
+    version: 25.8.0
+    repository: https://charts.selectdb.com
+    alias: dorisCluster
+    condition: dorisCluster.enabled
