@@ -32,6 +32,7 @@ DHIS 2 Helm chart bundling a CloudNativePG PostgreSQL cluster, an optional MinIO
 | dhis2Home | string | `"/opt/dhis2"` | DHIS 2 home directory. |
 | doris.createDatabase | bool | `true` | Create the database on install and drop it on uninstall. |
 | doris.database | string | `""` | Name of the Doris database for this instance. |
+| doris.driverFilename | string | `"https://jdbc.postgresql.org/download/postgresql-42.7.7.jar"` | PostgreSQL JDBC driver for the Doris JDBC catalog DHIS 2 creates on startup. Doris downloads the driver from this URL; set to a bare filename (e.g. postgresql.jar) if the driver is pre-installed in the Doris jdbc_drivers directory instead. |
 | doris.enabled | bool | `false` | Whether to use Doris as the analytics database. |
 | doris.existingSecret | string | `""` | Existing secret with the Doris credentials. |
 | doris.hostname | string | `""` | Hostname of the Doris frontend (MySQL protocol). |

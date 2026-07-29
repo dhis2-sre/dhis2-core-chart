@@ -84,6 +84,8 @@ doris:
   secretKeys:
     username: username
     password: password
+  # -- PostgreSQL JDBC driver for the Doris JDBC catalog DHIS 2 creates on startup. Doris downloads the driver from this URL; set to a bare filename (e.g. postgresql.jar) if the driver is pre-installed in the Doris jdbc_drivers directory instead.
+  driverFilename: https://jdbc.postgresql.org/download/postgresql-42.7.7.jar
 
 # Bundled Apache Doris cluster deployed next to this chart, as an alternative to the shared cluster
 # doris.hostname points at. Requires the doris-operator to be installed on the cluster. When
