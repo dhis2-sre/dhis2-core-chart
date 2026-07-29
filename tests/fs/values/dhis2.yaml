@@ -1,28 +1,23 @@
 storage:
-  type: minio
-
-minio:
-  enabled: true
+  type: filesystem
+  volumeSize: 5Gi
 
 ingress:
   enabled: true
   hostname: dhis2-127-0-0-1.nip.io
-  path: /dhis2
+  path: /fs
   certIssuer: cert-issuer-prod
   className: traefik
 
 startupProbe:
-  path: /dhis2
+  path: /fs
 livenessProbe:
-  path: /dhis2
+  path: /fs
 readinessProbe:
-  path: /dhis2
-contextPath: /dhis2
+  path: /fs
+contextPath: /fs
 
 image:
   repository: dhis2/core-dev
   tag: 2.42
   pullPolicy: Always
-
-postgresql:
-  storageSize: 5Gi

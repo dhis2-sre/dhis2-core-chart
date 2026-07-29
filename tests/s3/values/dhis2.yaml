@@ -1,0 +1,34 @@
+storage:
+  type: s3
+
+S3:
+  # provider is "s3" (generic, endpoint-configurable jclouds provider) rather than
+  # "aws-s3" so that DHIS2 actually honours the endpoint override and talks to the
+  # in-cluster MinIO. Real AWS deployments use provider: aws-s3 and rely on the SDK
+  # to resolve the endpoint, which would need real AWS to test.
+  provider: s3
+  container: dhis2
+  endpoint: http://dhis2-s3-minio.dhis2.svc:9000
+  location: eu-west-1
+  identity: dhisdhis
+  secret: dhisdhis
+
+ingress:
+  enabled: true
+  hostname: dhis2-127-0-0-1.nip.io
+  path: /s3
+  certIssuer: cert-issuer-prod
+  className: traefik
+
+startupProbe:
+  path: /s3
+livenessProbe:
+  path: /s3
+readinessProbe:
+  path: /s3
+contextPath: /s3
+
+image:
+  repository: dhis2/core-dev
+  tag: 2.42
+  pullPolicy: Always
