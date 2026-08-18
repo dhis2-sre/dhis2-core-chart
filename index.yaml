@@ -604,6 +604,27 @@ entries:
   dhis2:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2026-08-18T13:21:52.504304952Z"
+    dependencies:
+    - condition: minio.enabled
+      name: minio
+      repository: https://charts.bitnami.com/bitnami
+      version: 14.7.5
+    - alias: dorisCluster
+      condition: dorisCluster.enabled
+      name: doris
+      repository: https://charts.selectdb.com
+      version: 25.8.0
+    description: DHIS 2 Helm chart bundling a CloudNativePG PostgreSQL cluster, an
+      optional MinIO file store and an optional Doris analytics cluster
+    digest: b02dc1120f1f21ab3c9077b16f1232ac8a7d30d9e174c91e65206c695c9da53a
+    name: dhis2
+    type: application
+    urls:
+    - https://github.com/dhis2-sre/dhis2-core-chart/releases/download/dhis2-1.0.1/dhis2-1.0.1.tgz
+    version: 1.0.1
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2026-07-29T11:02:26.668672779Z"
     dependencies:
     - condition: minio.enabled
@@ -623,4 +644,4 @@ entries:
     urls:
     - https://github.com/dhis2-sre/dhis2-core-chart/releases/download/dhis2-1.0.0/dhis2-1.0.0.tgz
     version: 1.0.0
-generated: "2026-07-29T11:02:26.668830517Z"
+generated: "2026-08-18T13:21:52.504441154Z"
