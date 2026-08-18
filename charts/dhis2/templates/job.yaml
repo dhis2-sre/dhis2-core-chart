@@ -5,7 +5,10 @@ metadata:
   name: "{{ include "dhis2-core-helm.fullname" . }}-generate-analytics"
   annotations:
     "helm.sh/hook": post-install
-    "helm.sh/hook-weight": "0"
+    # Weight 2 so this runs after the databases are provisioned. It talks to the DHIS 2 API, and
+    # DHIS 2 does not finish starting until every database it is configured for exists, which for
+    # a Doris-backed instance means after the create-doris-database hook at weight 1.
+    "helm.sh/hook-weight": "2"
     #"helm.sh/hook-delete-policy": hook-succeeded,hook-failed
 spec:
   ttlSecondsAfterFinished: 3600
@@ -44,7 +47,10 @@ metadata:
   name: "{{ include "dhis2-core-helm.fullname" . }}-enable-user"
   annotations:
     "helm.sh/hook": post-install
-    "helm.sh/hook-weight": "0"
+    # Weight 2 so this runs after the databases are provisioned. It talks to the DHIS 2 API, and
+    # DHIS 2 does not finish starting until every database it is configured for exists, which for
+    # a Doris-backed instance means after the create-doris-database hook at weight 1.
+    "helm.sh/hook-weight": "2"
     #"helm.sh/hook-delete-policy": hook-succeeded,hook-failed
 spec:
   ttlSecondsAfterFinished: 3600
@@ -85,7 +91,10 @@ metadata:
   name: "{{ include "dhis2-core-helm.fullname" . }}-install-apps"
   annotations:
     "helm.sh/hook": post-install
-    "helm.sh/hook-weight": "0"
+    # Weight 2 so this runs after the databases are provisioned. It talks to the DHIS 2 API, and
+    # DHIS 2 does not finish starting until every database it is configured for exists, which for
+    # a Doris-backed instance means after the create-doris-database hook at weight 1.
+    "helm.sh/hook-weight": "2"
     #"helm.sh/hook-delete-policy": hook-succeeded,hook-failed
 spec:
   ttlSecondsAfterFinished: 3600
@@ -129,7 +138,8 @@ metadata:
   name: "{{ include "dhis2-core-helm.fullname" . }}-create-doris-database"
   annotations:
     "helm.sh/hook": post-install,post-upgrade
-    # Weight 1 so the PostgreSQL seed job (implicit weight 0) runs first.
+    # Weight 1 so the PostgreSQL seed job (implicit weight 0) runs first, and so the hooks that
+    # drive the DHIS 2 API (weight 2) run after this, since DHIS 2 cannot start without this database.
     "helm.sh/hook-weight": "1"
     "helm.sh/hook-delete-policy": before-hook-creation
 spec:
