@@ -56,3 +56,15 @@ Our release workflow will then using [Helm chart releaser action](https://github
 
 Note: there might be a slight delay between the release and the `index.yaml`
 file being updated as GitHub pages have to be re-deployed.
+
+## PostgreSQL image update in 1.1.0
+
+The default database image keeps PostgreSQL major 17 and moves PostGIS from 3.5
+to 3.6 on Debian Bookworm. Its pinned manifest includes Linux AMD64 and ARM64;
+the system variant retains Barman Cloud tooling. The seed client uses the
+separate multiarchitecture `dhis2/postgresql-curl:17-bookworm` image.
+
+Publish the seed image before releasing this chart. Existing installations
+upgrading the operand image should follow CloudNativePG's minor-image update
+procedure and update PostGIS extensions in each database as documented upstream;
+the chart's bootstrap SQL only creates extensions for newly initialized clusters.
