@@ -28,7 +28,7 @@ jobs:
         uses: actions/checkout@v7
         with:
           repository: dhis2-sre/bitnami-postgresql-curl
-          ref: 62497453474cb2e44399e3bda307f80e5c786a6b
+          ref: 76ea03ea66b1d02327a2f8544f39c5b5a286adb0
           path: .seed-image
 
       - name: Load candidate seed image into k3s
