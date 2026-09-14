@@ -24,8 +24,8 @@ postgresql:
   enabled: true
   # -- Number of PostgreSQL instances (pods) in the cluster.
   instances: 1
-  # -- PostGIS-enabled operand image; DHIS 2 requires the postgis extension.
-  imageName: ghcr.io/cloudnative-pg/postgis:17-3.5
+  # -- PostgreSQL 17 / PostGIS 3.6 operand image for AMD64 and ARM64, pinned to the manifest-list digest; system variant retains Barman Cloud.
+  imageName: ghcr.io/cloudnative-pg/postgis:17-3.6-system-bookworm@sha256:c142808c9495331e1464b81acf8a935b62ce745f80eba1f5608dbb0098084829
   # -- Storage size of each instance.
   storageSize: 8Gi
   # -- Storage class for the instance volumes; empty uses the cluster default.
@@ -38,7 +38,7 @@ postgresql:
     # -- Run a one-time seed job once the database is ready. The job waits for the database, skips if the dhis2_chart_seed_complete marker table exists, runs the script with superuser PG* environment prepared, then creates the marker. DHIS 2 waits for the marker before starting.
     enabled: false
     # -- Image for the seed job and the wait-for-seed init container; needs psql and curl.
-    image: dhis2/postgresql-curl:17
+    image: dhis2/postgresql-curl:17-bookworm
     # -- Shell script performing the seed.
     script: ""
     # -- Extra environment variables for the seed job.
