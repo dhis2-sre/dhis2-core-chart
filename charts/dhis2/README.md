@@ -1,6 +1,6 @@
 # dhis2
 
-![Version: 1.0.1](https://img.shields.io/badge/Version-1.0.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
+![Version: 1.1.0](https://img.shields.io/badge/Version-1.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
 
 DHIS 2 Helm chart bundling a CloudNativePG PostgreSQL cluster, an optional MinIO file store and an optional Doris analytics cluster
 
@@ -126,12 +126,12 @@ DHIS 2 Helm chart bundling a CloudNativePG PostgreSQL cluster, an optional MinIO
 | podSecurityContext | object | `{}` | Security context settings for pods (e.g., fsGroup). |
 | postgresql.commonLabels | object | `{}` | Labels propagated by the operator to every object it creates, including pods. |
 | postgresql.enabled | bool | `true` | Deploy a CloudNativePG PostgreSQL cluster. Requires the CloudNativePG operator; disable to bring your own database and set database.hostname. |
-| postgresql.imageName | string | `"ghcr.io/cloudnative-pg/postgis:17-3.5"` | PostGIS-enabled operand image; DHIS 2 requires the postgis extension. |
+| postgresql.imageName | string | `"ghcr.io/cloudnative-pg/postgis:17-3.6-system-bookworm@sha256:c142808c9495331e1464b81acf8a935b62ce745f80eba1f5608dbb0098084829"` | PostgreSQL 17 / PostGIS 3.6 operand image for AMD64 and ARM64, pinned to the manifest-list digest; system variant retains Barman Cloud. |
 | postgresql.instances | int | `1` | Number of PostgreSQL instances (pods) in the cluster. |
 | postgresql.resources | object | `{}` | Resources of the PostgreSQL containers. |
 | postgresql.seed.enabled | bool | `false` | Run a one-time seed job once the database is ready. The job waits for the database, skips if the dhis2_chart_seed_complete marker table exists, runs the script with superuser PG* environment prepared, then creates the marker. DHIS 2 waits for the marker before starting. |
 | postgresql.seed.extraEnv | list | `[]` | Extra environment variables for the seed job. |
-| postgresql.seed.image | string | `"dhis2/postgresql-curl:17"` | Image for the seed job and the wait-for-seed init container; needs psql and curl. |
+| postgresql.seed.image | string | `"dhis2/postgresql-curl:17-legacy-r1"` | Image for the seed job and the wait-for-seed init container; needs psql and curl. |
 | postgresql.seed.script | string | `""` | Shell script performing the seed. |
 | postgresql.storageClass | string | `""` | Storage class for the instance volumes; empty uses the cluster default. |
 | postgresql.storageSize | string | `"8Gi"` | Storage size of each instance. |
