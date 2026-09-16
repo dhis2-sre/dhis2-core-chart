@@ -65,7 +65,8 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           mkdir -p .index-packages
-          cp index.yaml _site/index.yaml
+          helm repo index .index-packages
+          mv .index-packages/index.yaml _site/index.yaml
           gh api --paginate "repos/$GITHUB_REPOSITORY/releases?per_page=100" \
             --jq '.[] | select(.draft == false) | .assets[] | select(.name | endswith(".tgz")) | .browser_download_url' |
             while IFS= read -r url; do

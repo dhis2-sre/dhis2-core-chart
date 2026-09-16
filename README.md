@@ -41,8 +41,8 @@ helm search repo dhis2/dhis2 --versions
 
 The available versions are listed in the
 [published index](https://dhis2-sre.github.io/dhis2-core-chart/index.yaml).
-The tracked `index.yaml` preserves the historical entries; the release workflow
-adds published chart versions to the deployed index without committing generated files.
+The release workflow generates this index entirely from published chart packages,
+including historical versions. Generated files are not committed to the repository.
 
 ### Release
 
