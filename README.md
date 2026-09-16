@@ -61,8 +61,8 @@ file being updated as GitHub pages have to be re-deployed.
 
 The default database image keeps PostgreSQL major 17 and moves PostGIS from 3.5
 to 3.6 on Debian Bookworm. Its pinned manifest includes Linux AMD64 and ARM64;
-the system variant retains Barman Cloud tooling. The seed client uses the
-separate multiarchitecture `dhis2/postgresql-curl:17-bookworm` image.
+the system variant retains Barman Cloud tooling. The seed job and wait container
+use the multiarchitecture `dhis2/postgresql-curl:17-legacy-r1` image.
 
 Publish the seed image before releasing this chart. Existing installations
 upgrading the operand image should follow CloudNativePG's minor-image update

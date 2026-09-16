@@ -38,7 +38,7 @@ postgresql:
     # -- Run a one-time seed job once the database is ready. The job waits for the database, skips if the dhis2_chart_seed_complete marker table exists, runs the script with superuser PG* environment prepared, then creates the marker. DHIS 2 waits for the marker before starting.
     enabled: false
     # -- Image for the seed job and the wait-for-seed init container; needs psql and curl.
-    image: dhis2/postgresql-curl:17-bookworm
+    image: dhis2/postgresql-curl:17-legacy-r1
     # -- Shell script performing the seed.
     script: ""
     # -- Extra environment variables for the seed job.

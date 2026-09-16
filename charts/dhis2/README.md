@@ -131,7 +131,7 @@ DHIS 2 Helm chart bundling a CloudNativePG PostgreSQL cluster, an optional MinIO
 | postgresql.resources | object | `{}` | Resources of the PostgreSQL containers. |
 | postgresql.seed.enabled | bool | `false` | Run a one-time seed job once the database is ready. The job waits for the database, skips if the dhis2_chart_seed_complete marker table exists, runs the script with superuser PG* environment prepared, then creates the marker. DHIS 2 waits for the marker before starting. |
 | postgresql.seed.extraEnv | list | `[]` | Extra environment variables for the seed job. |
-| postgresql.seed.image | string | `"dhis2/postgresql-curl:17-bookworm"` | Image for the seed job and the wait-for-seed init container; needs psql and curl. |
+| postgresql.seed.image | string | `"dhis2/postgresql-curl:17-legacy-r1"` | Image for the seed job and the wait-for-seed init container; needs psql and curl. |
 | postgresql.seed.script | string | `""` | Shell script performing the seed. |
 | postgresql.storageClass | string | `""` | Storage class for the instance volumes; empty uses the cluster default. |
 | postgresql.storageSize | string | `"8Gi"` | Storage size of each instance. |

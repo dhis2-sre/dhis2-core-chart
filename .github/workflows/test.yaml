@@ -23,18 +23,18 @@ jobs:
           done
 
       # Validate the candidate seed image before its first registry publication.
-      # Remove these two steps once dhis2/postgresql-curl:17-bookworm is released.
+      # Remove these two steps once dhis2/postgresql-curl:17-legacy-r1 is released.
       - name: Check out seed image source
         uses: actions/checkout@v7
         with:
           repository: dhis2-sre/bitnami-postgresql-curl
-          ref: 76ea03ea66b1d02327a2f8544f39c5b5a286adb0
+          ref: 1c282a5cd757bdfa60b997bcfc51d244959ecebe
           path: .seed-image
 
       - name: Load candidate seed image into k3s
         run: |
-          docker build -f .seed-image/Dockerfile.seed -t dhis2/postgresql-curl:17-bookworm .seed-image
-          docker save dhis2/postgresql-curl:17-bookworm | docker compose -f tests/docker-compose.yml exec -T k3s ctr -n k8s.io images import -
+          docker build -f .seed-image/Dockerfile -t dhis2/postgresql-curl:17-legacy-r1 .seed-image
+          docker save dhis2/postgresql-curl:17-legacy-r1 | docker compose -f tests/docker-compose.yml exec -T k3s ctr -n k8s.io images import -
 
       - name: Set kubeconfig
         run: echo "KUBECONFIG=$PWD/tests/output/kubeconfig.yaml" >> $GITHUB_ENV
