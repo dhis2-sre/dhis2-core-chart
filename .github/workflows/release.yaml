@@ -4,23 +4,28 @@ on:
   push:
     branches:
       - master
+  workflow_dispatch:
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
 
 jobs:
   release:
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     permissions:
       contents: write
       pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v7
         with:
           fetch-depth: 0
-
-      - name: Configure Git
-        run: |
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
       - name: Install Helm
         uses: azure/setup-helm@v5
@@ -33,45 +38,49 @@ jobs:
           helm repo add selectdb https://charts.selectdb.com
           helm dependency build charts/dhis2
 
-      - name: Run chart-releaser
-        id: charts
+      - name: Install chart-releaser
         uses: helm/chart-releaser-action@v1.7.0
         with:
-          config: cr.yaml
-          # In v1.7.0 this skips the index push; release assets are still uploaded.
-          skip_upload: true
-        env:
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          install_only: true
 
-      - name: Generate chart index
-        if: steps.charts.outputs.changed_charts != ''
+      - name: Publish chart release
         env:
           CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: cr index --config cr.yaml --owner "$GITHUB_REPOSITORY_OWNER" --git-repo "${GITHUB_REPOSITORY#*/}"
+        run: |
+          cr package charts/dhis2 --config cr.yaml
+          cr upload --config cr.yaml --owner "$GITHUB_REPOSITORY_OWNER" --git-repo "${GITHUB_REPOSITORY#*/}" --commit "$GITHUB_SHA"
 
-      - name: Publish signed index and rebuild Pages
-        if: steps.charts.outputs.changed_charts != ''
-        uses: actions/github-script@v8
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Build documentation
+        uses: actions/jekyll-build-pages@v1
         with:
-          script: |
-            const fs = require('fs');
-            const path = '.cr-index/index.yaml';
-            if (!fs.existsSync(path)) {
-              core.info('Chart index is already up to date.');
-              return;
-            }
-            const contents = fs.readFileSync(path);
-            if (contents.equals(fs.readFileSync('index.yaml'))) return;
-            await github.graphql(`
-              mutation($input: CreateCommitOnBranchInput!) {
-                createCommitOnBranch(input: $input) { commit { oid } }
-              }
-            `, {
-              input: {
-                branch: { repositoryNameWithOwner: `${context.repo.owner}/${context.repo.repo}`, refName: 'master' },
-                expectedHeadOid: context.sha,
-                message: { headline: 'chore(release): update chart index' },
-                fileChanges: { additions: [{ path: 'index.yaml', contents: contents.toString('base64') }] }
-              }
-            });
-            await github.rest.repos.requestPagesBuild(context.repo);
+          source: ./
+          destination: ./_site
+
+      - name: Generate index from published charts
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p .index-packages
+          cp index.yaml _site/index.yaml
+          gh api --paginate "repos/$GITHUB_REPOSITORY/releases?per_page=100" \
+            --jq '.[] | select(.draft == false) | .assets[] | select(.name | endswith(".tgz")) | .browser_download_url' |
+            while IFS= read -r url; do
+              package=".index-packages/${url##*/}"
+              curl --fail --silent --show-error --location --output "$package" "$url"
+              helm repo index .index-packages --url "${url%/*}" --merge _site/index.yaml
+              mv .index-packages/index.yaml _site/index.yaml
+              rm "$package"
+            done
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ./_site
+
+      - name: Deploy Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
