@@ -64,7 +64,6 @@ to 3.6 on Debian Bookworm. Its pinned manifest includes Linux AMD64 and ARM64;
 the system variant retains Barman Cloud tooling. The seed job and wait container
 use the multiarchitecture `dhis2/postgresql-curl:17-legacy-r1` image.
 
-Publish the seed image before releasing this chart. Existing installations
-upgrading the operand image should follow CloudNativePG's minor-image update
+Existing installations upgrading the operand image should follow CloudNativePG's minor-image update
 procedure and update PostGIS extensions in each database as documented upstream;
 the chart's bootstrap SQL only creates extensions for newly initialized clusters.
