@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DHIS2 Helm charts</title>
+<style>
+:root {
+  color-scheme: light dark;
+  --background: #ffffff;
+  --foreground: #1b1f23;
+  --muted: #58626d;
+  --border: #d8dee4;
+  --surface: #f6f8fa;
+  --accent: #1f6feb;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0d1117;
+    --foreground: #e6edf3;
+    --muted: #9198a1;
+    --border: #30363d;
+    --surface: #161b22;
+    --accent: #58a6ff;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 4rem 16px;
+  background: var(--background);
+  color: var(--foreground);
+  font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+main { max-width: 42rem; margin: 0 auto; }
+h1 { font-size: 1.75rem; margin: 0 0 .5rem; letter-spacing: -0.02em; }
+p.lede { color: var(--muted); margin: 0 0 2.5rem; }
+h2 { font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 2.5rem 0 .75rem; }
+pre {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 0;
+  font: .875rem/1.7 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+ul { list-style: none; padding: 0; margin: 0; }
+li { padding: .6rem 0; border-bottom: 1px solid var(--border); }
+li:last-child { border-bottom: 0; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+footer { margin-top: 3rem; color: var(--muted); font-size: .875rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>DHIS2 Helm charts</h1>
+  <p class="lede">The Helm chart repository for deploying DHIS2 on Kubernetes.</p>
+
+  <h2>Add the repository</h2>
+  <pre>helm repo add dhis2 https://dhis2-sre.github.io/dhis2-core-chart
+helm repo update
+helm search repo dhis2</pre>
+
+  <h2>Install a chart</h2>
+  <pre>helm install my-release dhis2/dhis2 --version &lt;version&gt;</pre>
+
+  <h2>Links</h2>
+  <ul>
+    <li><a href="index.yaml">index.yaml</a> - every published chart version</li>
+    <li><a href="https://github.com/dhis2-sre/dhis2-core-chart">Source repository</a></li>
+    <li><a href="https://github.com/dhis2-sre/dhis2-core-chart/releases">Releases</a> - the packaged charts this index is built from</li>
+  </ul>
+
+  <footer>Maintained by the DHIS2 SRE team.</footer>
+</main>
+</body>
+</html>

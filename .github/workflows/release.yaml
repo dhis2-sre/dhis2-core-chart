@@ -53,18 +53,14 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
-      - name: Build documentation
-        uses: actions/jekyll-build-pages@v1
-        with:
-          source: ./
-          destination: ./_site
-
+      # The releases are the source of truth for what the repository offers, so the index is rebuilt
+      # from their assets rather than carried forward in a branch that a bot has to commit to.
       - name: Generate index from published charts
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          mkdir -p .index-packages
+          mkdir -p .index-packages _site
           helm repo index .index-packages
           mv .index-packages/index.yaml _site/index.yaml
           gh api --paginate "repos/$GITHUB_REPOSITORY/releases?per_page=100" \
@@ -76,6 +72,9 @@ jobs:
               mv .index-packages/index.yaml _site/index.yaml
               rm "$package"
             done
+
+      - name: Add the repository landing page
+        run: cp pages/index.html _site/index.html
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
