@@ -39,23 +39,28 @@ helm repo update
 helm search repo dhis2/dhis2 --versions
 ```
 
-The versions returned are gathered from [index.yaml](./index.yaml) which is
-published to [this GitHub page](https://dhis2-sre.github.io/dhis2-core-chart/index.yaml).
+The available versions are listed in the
+[published index](https://dhis2-sre.github.io/dhis2-core-chart/index.yaml).
+The release workflow generates this index entirely from published chart packages,
+including historical versions. Generated files are not committed to the repository.
 
 ### Release
 
-Bump the version in [Chart.yaml](./charts/dhis2/Chart.yaml), commit and push.
-**NOTE: do not create a tag yourself!**
+Bump the version in [Chart.yaml](./charts/dhis2/Chart.yaml) and merge the change to
+`master`. **Do not create a tag yourself.**
 
-Our release workflow will then using [Helm chart releaser action](https://github.com/helm/chart-releaser-action)
+The release workflow:
 
-* create a tag `dhis2-<version>`
-* create a [release](https://github.com/dhis2-sre/dhis2-core-chart/releases) associated with the new tag
-* commit an updated index.yaml with the new release
-* redeploy the GitHub pages to serve the new index.yaml
+* packages the chart and creates its GitHub release and tag, skipping existing releases;
+* builds the documentation and indexes the published chart packages, including older versions;
+* uploads and deploys the site using GitHub's standard Pages actions.
 
-Note: there might be a slight delay between the release and the `index.yaml`
-file being updated as GitHub pages have to be re-deployed.
+In Settings → Pages, the source must be **GitHub Actions**. The chart repository
+URL stays `https://dhis2-sre.github.io/dhis2-core-chart`.
+
+To retry publication after a failure, run **Release Charts** manually on `master`.
+The index uses downloaded release assets, so retries preserve their checksums and
+recover packages that were uploaded before a Pages deployment failed.
 
 ## PostgreSQL image update in 1.1.0
 
