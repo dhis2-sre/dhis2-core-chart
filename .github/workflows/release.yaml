@@ -51,7 +51,7 @@ jobs:
           cr upload --config cr.yaml --owner "$GITHUB_REPOSITORY_OWNER" --git-repo "${GITHUB_REPOSITORY#*/}" --commit "$GITHUB_SHA"
 
       - name: Configure Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       - name: Build documentation
         uses: actions/jekyll-build-pages@v1
