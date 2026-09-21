@@ -32,6 +32,8 @@ postgresql:
   storageClass: ""
   # -- Labels propagated by the operator to every object it creates, including pods.
   commonLabels: {}
+  # -- CloudNativePG affinity configuration for PostgreSQL instance pods.
+  affinity: {}
   # -- Resources of the PostgreSQL containers.
   resources: {}
   seed:
@@ -56,6 +58,8 @@ minio:
   defaultBuckets: dhis2
   # -- The Bitnami default preset starves the file store under load; no preset is applied and explicit resources should be set instead.
   resourcesPreset: none
+  # -- Affinity rules for MinIO pods.
+  affinity: {}
   image:
     # -- Bitnami stopped publishing versioned minio images to the bitnami repository; the legacy repository carries them (requires global.security.allowInsecureImages).
     repository: bitnamilegacy/minio
@@ -101,6 +105,8 @@ dorisCluster:
   # Note: the upstream chart uses the singular `resource` key.
   feSpec:
     replicas: 1
+    # -- Affinity rules for Doris frontend pods.
+    affinity: {}
     resource:
       requests:
         cpu: "1"
@@ -110,6 +116,8 @@ dorisCluster:
         memory: 8Gi
   beSpec:
     replicas: 1
+    # -- Affinity rules for Doris backend pods.
+    affinity: {}
     resource:
       requests:
         cpu: "1"
@@ -453,5 +461,5 @@ nodeSelector: {}
 # -- Tolerations that are added to pods to allow them to schedule onto nodes with certain taints.
 tolerations: []
 
-# -- Affinity rules for pod scheduling, allowing you to define preferred or required co-location of pods.
+# -- Affinity rules applied to the DHIS 2 deployment, chart-managed jobs, and Helm test pod.
 affinity: {}

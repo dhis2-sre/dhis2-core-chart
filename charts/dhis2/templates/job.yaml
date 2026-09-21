@@ -14,6 +14,10 @@ spec:
   ttlSecondsAfterFinished: 3600
   template:
     spec:
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ include "dhis2-core-helm.fullname" . }}-generate-analytics-job
           image: curlimages/curl:latest
@@ -56,6 +60,10 @@ spec:
   ttlSecondsAfterFinished: 3600
   template:
     spec:
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ include "dhis2-core-helm.fullname" . }}-enable-user-job
           image: alpine/k8s:1.29.0
@@ -100,6 +108,10 @@ spec:
   ttlSecondsAfterFinished: 3600
   template:
     spec:
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ include "dhis2-core-helm.fullname" . }}-install-apps-job
           image: alpine/k8s:1.29.0
@@ -147,6 +159,10 @@ spec:
   activeDeadlineSeconds: 1200
   template:
     spec:
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       restartPolicy: OnFailure
       containers:
         - name: create-doris-database
@@ -206,6 +222,10 @@ spec:
   ttlSecondsAfterFinished: 300
   template:
     spec:
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       restartPolicy: OnFailure
       containers:
         - name: drop-doris-database

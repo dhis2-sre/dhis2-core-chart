@@ -15,7 +15,7 @@ DHIS 2 Helm chart bundling a CloudNativePG PostgreSQL cluster, an optional MinIO
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| affinity | object | `{}` | Affinity rules for pod scheduling, allowing you to define preferred or required co-location of pods. |
+| affinity | object | `{}` | Affinity rules applied to the DHIS 2 deployment, chart-managed jobs, and Helm test pod. |
 | autoscaling.enabled | bool | `false` | Whether horizontal pod autoscaler is enabled. |
 | autoscaling.maxReplicas | int | `100` | Maximum number of replicas for the deployment. |
 | autoscaling.minReplicas | int | `1` | Minimum number of replicas for the deployment. |
@@ -42,6 +42,7 @@ DHIS 2 Helm chart bundling a CloudNativePG PostgreSQL cluster, an optional MinIO
 | doris.secretKeys.username | string | `"username"` |  |
 | doris.useSSL | bool | `false` |  |
 | doris.username | string | `""` | Doris username for DHIS 2, created with the required grants by the create-database job when createDatabase is true. Ignored when existingSecret is set. |
+| dorisCluster.beSpec.affinity | object | `{}` | Affinity rules for Doris backend pods. |
 | dorisCluster.beSpec.replicas | int | `1` |  |
 | dorisCluster.beSpec.resource.limits.cpu | string | `"4"` |  |
 | dorisCluster.beSpec.resource.limits.memory | string | `"8Gi"` |  |
@@ -49,6 +50,7 @@ DHIS 2 Helm chart bundling a CloudNativePG PostgreSQL cluster, an optional MinIO
 | dorisCluster.beSpec.resource.requests.memory | string | `"4Gi"` |  |
 | dorisCluster.dorisCluster.name | string | `"dhis2-doris"` | Name of the DorisCluster resource, must be unique per namespace. |
 | dorisCluster.enabled | bool | `false` |  |
+| dorisCluster.feSpec.affinity | object | `{}` | Affinity rules for Doris frontend pods. |
 | dorisCluster.feSpec.replicas | int | `1` |  |
 | dorisCluster.feSpec.resource.limits.cpu | string | `"4"` |  |
 | dorisCluster.feSpec.resource.limits.memory | string | `"8Gi"` |  |
@@ -113,6 +115,7 @@ DHIS 2 Helm chart bundling a CloudNativePG PostgreSQL cluster, an optional MinIO
 | minIO.provider | string | `"s3"` | Provider type, currently only 's3' is supported. |
 | minIO.secret | string | `"dhisdhis"` | Secret key, must match minio.auth.rootPassword. |
 | minReadySeconds | int | `120` | Minimum number of seconds for the pod to be ready before being considered available. |
+| minio.affinity | object | `{}` | Affinity rules for MinIO pods. |
 | minio.auth.rootPassword | string | `"dhisdhis"` | MinIO secret key, must match minIO.secret. |
 | minio.auth.rootUser | string | `"dhisdhis"` | MinIO access key, must match minIO.identity. |
 | minio.defaultBuckets | string | `"dhis2"` | Bucket created on startup, must match minIO.container. |
@@ -124,6 +127,7 @@ DHIS 2 Helm chart bundling a CloudNativePG PostgreSQL cluster, an optional MinIO
 | podAnnotations | object | `{}` | Annotations applied to all pods deployed by this chart. |
 | podLabels | object | `{}` | Labels applied to all pods deployed by this chart. |
 | podSecurityContext | object | `{}` | Security context settings for pods (e.g., fsGroup). |
+| postgresql.affinity | object | `{}` | CloudNativePG affinity configuration for PostgreSQL instance pods. |
 | postgresql.commonLabels | object | `{}` | Labels propagated by the operator to every object it creates, including pods. |
 | postgresql.enabled | bool | `true` | Deploy a CloudNativePG PostgreSQL cluster. Requires the CloudNativePG operator; disable to bring your own database and set database.hostname. |
 | postgresql.imageName | string | `"ghcr.io/cloudnative-pg/postgis:17-3.6-system-bookworm@sha256:c142808c9495331e1464b81acf8a935b62ce745f80eba1f5608dbb0098084829"` | PostgreSQL 17 / PostGIS 3.6 operand image for AMD64 and ARM64, pinned to the manifest-list digest; system variant retains Barman Cloud. |
