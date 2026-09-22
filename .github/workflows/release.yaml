@@ -86,7 +86,7 @@ jobs:
           mv index.yaml site/index.yaml
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           path: ./site
 
