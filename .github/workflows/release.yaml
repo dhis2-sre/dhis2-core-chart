@@ -66,21 +66,29 @@ jobs:
         run: |
           mkdir -p .index-packages
           helm repo index .index-packages
-          mv .index-packages/index.yaml _site/index.yaml
+          mv .index-packages/index.yaml index.yaml
           gh api --paginate "repos/$GITHUB_REPOSITORY/releases?per_page=100" \
             --jq '.[] | select(.draft == false) | .assets[] | select(.name | endswith(".tgz")) | .browser_download_url' |
             while IFS= read -r url; do
               package=".index-packages/${url##*/}"
               curl --fail --silent --show-error --location --output "$package" "$url"
-              helm repo index .index-packages --url "${url%/*}" --merge _site/index.yaml
-              mv .index-packages/index.yaml _site/index.yaml
+              helm repo index .index-packages --url "${url%/*}" --merge index.yaml
+              mv .index-packages/index.yaml index.yaml
               rm "$package"
             done
+
+      # The rendered documentation and the index are produced by separate steps, each writing where
+      # it owns the files. The site is their union.
+      - name: Assemble Pages artifact
+        run: |
+          mkdir site
+          cp --recursive _site/. site/
+          mv index.yaml site/index.yaml
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
         with:
-          path: ./_site
+          path: ./site
 
       - name: Deploy Pages
         id: deployment
