@@ -13,6 +13,10 @@ spec:
   {{- end }}
   instances: {{ .Values.postgresql.instances }}
   imageName: {{ .Values.postgresql.imageName }}
+  {{- with .Values.postgresql.affinity }}
+  affinity:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   storage:
     size: {{ .Values.postgresql.storageSize }}
     {{- with .Values.postgresql.storageClass }}
