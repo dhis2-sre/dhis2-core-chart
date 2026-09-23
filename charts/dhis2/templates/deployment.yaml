@@ -130,6 +130,7 @@ spec:
                 -Dlog4j2.configurationFile={{ .Values.dhis2Home }}/log4j2.xml
                 -Dcontext.sameSiteCookies={{ .Values.sessionCookieSameSite }}
                 -Dcontext.path={{ .Values.contextPath }}
+                -Dcontext.cookiePath={{ .Values.sessionCookiePath | default .Values.contextPath }}
                 {{- if .Values.glowroot.enabled }}
                 -javaagent:/glowroot/glowroot.jar
                 -Dglowroot.conf.dir=/glowroot

@@ -156,6 +156,7 @@ DHIS 2 Helm chart bundling a CloudNativePG PostgreSQL cluster, an optional MinIO
 | serviceAccount.annotations | object | `{}` | Additional annotations for the service account. |
 | serviceAccount.create | bool | `true` | Whether a service account should be created. |
 | serviceAccount.name | string | `""` | Name of an existing service account to use. If not set and create is true, a name is generated using the fullname template |
+| sessionCookiePath | string | `""` | Session cookie path. When empty, defaults to contextPath. |
 | sessionCookieSameSite | string | `"Lax"` | Value can be 'Lax', 'Strict', or 'None'. |
 | startupProbe.failureThreshold | int | `26` | Maximum number of failures. |
 | startupProbe.path | string | `"/"` | Path |

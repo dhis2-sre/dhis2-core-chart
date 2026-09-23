@@ -221,6 +221,8 @@ database:
 # Configuration for session cookies.
 # -- Value can be 'Lax', 'Strict', or 'None'.
 sessionCookieSameSite: Lax
+# -- Session cookie path. When empty, defaults to contextPath.
+sessionCookiePath: ""
 
 # Flyway migrations
 flyway:
