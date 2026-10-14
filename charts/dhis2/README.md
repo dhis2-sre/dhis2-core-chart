@@ -130,6 +130,7 @@ DHIS 2 Helm chart bundling a CloudNativePG PostgreSQL cluster, an optional MinIO
 | postgresql.affinity | object | `{}` | CloudNativePG affinity configuration for PostgreSQL instance pods. |
 | postgresql.commonLabels | object | `{}` | Labels propagated by the operator to every object it creates, including pods. |
 | postgresql.enabled | bool | `true` | Deploy a CloudNativePG PostgreSQL cluster. Requires the CloudNativePG operator; disable to bring your own database and set database.hostname. |
+| postgresql.enablePDB | bool | `true` | Create the CloudNativePG pod disruption budgets. With a single instance they allow no evictions, which blocks node drains and cluster autoscaler scale-down. |
 | postgresql.imageName | string | `"ghcr.io/cloudnative-pg/postgis:17-3.6-system-bookworm@sha256:c142808c9495331e1464b81acf8a935b62ce745f80eba1f5608dbb0098084829"` | PostgreSQL 17 / PostGIS 3.6 operand image for AMD64 and ARM64, pinned to the manifest-list digest; system variant retains Barman Cloud. |
 | postgresql.instances | int | `1` | Number of PostgreSQL instances (pods) in the cluster. |
 | postgresql.resources | object | `{}` | Resources of the PostgreSQL containers. |

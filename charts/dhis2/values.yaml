@@ -24,6 +24,8 @@ postgresql:
   enabled: true
   # -- Number of PostgreSQL instances (pods) in the cluster.
   instances: 1
+  # -- Create the CloudNativePG pod disruption budgets. With a single instance they allow no evictions, which blocks node drains and cluster autoscaler scale-down.
+  enablePDB: true
   # -- PostgreSQL 17 / PostGIS 3.6 operand image for AMD64 and ARM64, pinned to the manifest-list digest; system variant retains Barman Cloud.
   imageName: ghcr.io/cloudnative-pg/postgis:17-3.6-system-bookworm@sha256:c142808c9495331e1464b81acf8a935b62ce745f80eba1f5608dbb0098084829
   # -- Storage size of each instance.
