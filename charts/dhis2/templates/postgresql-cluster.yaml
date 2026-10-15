@@ -12,6 +12,7 @@ spec:
       {{- toYaml . | nindent 6 }}
   {{- end }}
   instances: {{ .Values.postgresql.instances }}
+  enablePDB: {{ .Values.postgresql.enablePDB }}
   imageName: {{ .Values.postgresql.imageName }}
   {{- with .Values.postgresql.affinity }}
   affinity:
