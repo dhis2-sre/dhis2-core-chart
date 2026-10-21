@@ -133,6 +133,7 @@ DHIS 2 Helm chart bundling a CloudNativePG PostgreSQL cluster, an optional MinIO
 | postgresql.enablePDB | bool | `true` | Create the CloudNativePG pod disruption budgets. With a single instance they allow no evictions, which blocks node drains and cluster autoscaler scale-down. |
 | postgresql.imageName | string | `"ghcr.io/cloudnative-pg/postgis:17-3.6-system-bookworm@sha256:c142808c9495331e1464b81acf8a935b62ce745f80eba1f5608dbb0098084829"` | PostgreSQL 17 / PostGIS 3.6 operand image for AMD64 and ARM64, pinned to the manifest-list digest; system variant retains Barman Cloud. |
 | postgresql.instances | int | `1` | Number of PostgreSQL instances (pods) in the cluster. |
+| postgresql.parameters | object | `{}` | PostgreSQL configuration parameters set on the cluster, including custom settings such as `dhis2.environment`; values are passed as strings. |
 | postgresql.resources | object | `{}` | Resources of the PostgreSQL containers. |
 | postgresql.seed.enabled | bool | `false` | Run a one-time seed job once the database is ready. The job waits for the database, skips if the dhis2_chart_seed_complete marker table exists, runs the script with superuser PG* environment prepared, then creates the marker. DHIS 2 waits for the marker before starting. |
 | postgresql.seed.extraEnv | list | `[]` | Extra environment variables for the seed job. |

@@ -38,6 +38,8 @@ postgresql:
   affinity: {}
   # -- Resources of the PostgreSQL containers.
   resources: {}
+  # -- PostgreSQL configuration parameters set on the cluster, including custom settings such as `dhis2.environment`; values are passed as strings.
+  parameters: {}
   seed:
     # -- Run a one-time seed job once the database is ready. The job waits for the database, skips if the dhis2_chart_seed_complete marker table exists, runs the script with superuser PG* environment prepared, then creates the marker. DHIS 2 waits for the marker before starting.
     enabled: false

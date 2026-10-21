@@ -27,6 +27,13 @@ spec:
   resources:
     {{- toYaml . | nindent 4 }}
   {{- end }}
+  {{- with .Values.postgresql.parameters }}
+  postgresql:
+    parameters:
+      {{- range $name, $value := . }}
+      {{ $name }}: {{ $value | toString | quote }}
+      {{- end }}
+  {{- end }}
   bootstrap:
     initdb:
       database: {{ include "dhis2-core-helm.databaseName" . }}
