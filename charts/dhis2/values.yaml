@@ -287,6 +287,12 @@ initContainers: []
 #    - name: dhis-home
 #      mountPath: /dhis-home
 
+# -- Additional Kubernetes volumes for the DHIS 2 pod, such as existing PVCs, Secrets or ConfigMaps. Names must not conflict with chart-managed volumes.
+extraVolumes: []
+
+# -- Additional Kubernetes volume mounts for the DHIS 2 container. Names must reference pod volumes; mount paths must not conflict with chart-managed mounts.
+extraVolumeMounts: []
+
 # -- DHIS 2 home directory.
 dhis2Home: /opt/dhis2
 
