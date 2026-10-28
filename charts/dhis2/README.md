@@ -11,6 +11,38 @@ DHIS 2 Helm chart bundling a CloudNativePG PostgreSQL cluster, an optional MinIO
 | https://charts.bitnami.com/bitnami | minio | 14.7.5 |
 | https://charts.selectdb.com | dorisCluster(doris) | 25.8.0 |
 
+## Additional Volumes
+
+Use `extraVolumes` and `extraVolumeMounts` to mount existing PVCs, Secrets or
+ConfigMaps in the DHIS 2 container. These lists accept native Kubernetes volume
+and volumeMount definitions, including `subPath` and `readOnly`.
+
+```yaml
+extraVolumes:
+	- name: test-data
+		persistentVolumeClaim:
+			claimName: existing-test-data
+	- name: test-certificates
+		secret:
+			secretName: existing-test-certificates
+extraVolumeMounts:
+	- name: test-data
+		mountPath: /mnt/test-data
+	- name: test-certificates
+		mountPath: /opt/dhis2/test.crt
+		subPath: test.crt
+		readOnly: true
+```
+
+Referenced PVCs, Secrets and ConfigMaps must already exist in the release's
+namespace. Use unique volume names and mount paths that do not conflict with
+chart-managed mounts. The chart does not create these resources or change their
+permissions; make writable volumes accessible to the configured DHIS 2 user.
+PVC access modes must support your replica count and rollout strategy.
+These settings add mounts rather than replace the DHIS 2 home volume, and are
+not automatically applied to init containers or jobs. Custom `initContainers`
+can reference the additional pod volumes using their own `volumeMounts`.
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -57,6 +89,8 @@ DHIS 2 Helm chart bundling a CloudNativePG PostgreSQL cluster, an optional MinIO
 | dorisCluster.feSpec.resource.requests.cpu | string | `"1"` |  |
 | dorisCluster.feSpec.resource.requests.memory | string | `"4Gi"` |  |
 | enableQueryLogging | bool | `false` | Enable SQL query logging |
+| extraVolumeMounts | list | `[]` | Additional Kubernetes volume mounts for the DHIS 2 container. Names must reference pod volumes; mount paths must not conflict with chart-managed mounts. |
+| extraVolumes | list | `[]` | Additional Kubernetes volumes for the DHIS 2 pod, such as existing PVCs, Secrets or ConfigMaps. Names must not conflict with chart-managed volumes. |
 | flyway.migrateOutOfOrder | bool | `false` | Allow out-of-order migrations |
 | flyway.repairBeforeMigration | bool | `false` | Repair before migrations |
 | fullnameOverride | string | `""` | Overrides the full name of the deployment (including namespace). |
