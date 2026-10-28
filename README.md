@@ -16,6 +16,44 @@ If you don't have a cluster available, one can be created using [this](https://g
 
 The CloudNativePG operator must be installed on the cluster before the chart can deploy.
 
+## Single sign-on
+
+DHIS2 can accept login from multiple external OIDC providers (`sso.oidc.providers`) and/or issue OAuth2/OIDC tokens for a separate application (`sso.authorizationServer`). Set the public HTTPS `sso.baseUrl` (or configure HTTPS ingress with `ingress.certIssuer`) when enabling the authorization server. 
+
+For external login, register DHIS2 as a client with each identity provider, configure its authorization, token, user-info and JWKS endpoints, and provision matching DHIS2 user accounts. The default callback is `<baseUrl>/oauth2/code/<provider-id>`; set `redirectUrl` when a different callback is required. For example, create a Secret containing the client credential and configure a provider:
+
+```bash
+kubectl create secret generic company-oidc --from-literal=client-secret='<client secret>'
+```
+
+```yaml
+sso:
+  baseUrl: https://dhis.example.org
+  oidc:
+    providers:
+      - id: company
+        clientId: dhis2
+        existingSecret: company-oidc
+        authorizationUri: https://login.example.org/authorize
+        tokenUri: https://login.example.org/token
+        userInfoUri: https://login.example.org/userinfo
+        jwkUri: https://login.example.org/jwks
+        mappingClaim: email
+```
+
+For DHIS2 to act as an issuer, generate a persistent PKCS12/JKS signing keystore with an alias, store it in a pre-created Kubernetes Secret with keys `keystore` (binary), `password`, and `key-password`, and set `sso.authorizationServer.enabled`, `keyAlias`, and `existingSecret`. Register the consuming application's OAuth2 client and allowed redirect URIs **in DHIS2**; enabling the server alone does not register clients. Keep the issuer URL stable and preserve the keystore across upgrades and replicas so existing tokens remain verifiable.
+
+```yaml
+sso:
+  baseUrl: https://dhis.example.org
+  authorizationServer:
+    enabled: true
+    keyAlias: dhis
+    existingSecret: dhis-signing
+```
+
+Pre-created Secrets are recommended for production. Alternatively, `clientSecret` and `authorizationServer.keystoreBase64`/`password`/`keyPassword` place credentials in the chart-managed Secret. Those values still appear in Helm release data and may appear in command history or values files: do not commit them to Git. Secret data is injected as environment variables and never written literally into the chart's `dhis.conf` ConfigMap. Use HTTPS for the public issuer and the identity provider endpoints, and restrict access to Secret manifests and Helm release data.
+
 ## Launch
 
 ```bash

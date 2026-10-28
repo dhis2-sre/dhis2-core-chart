@@ -160,6 +160,14 @@ DHIS 2 Helm chart bundling a CloudNativePG PostgreSQL cluster, an optional MinIO
 | serviceAccount.name | string | `""` | Name of an existing service account to use. If not set and create is true, a name is generated using the fullname template |
 | sessionCookiePath | string | `""` | Session cookie path. When empty, defaults to contextPath. |
 | sessionCookieSameSite | string | `"Lax"` | Value can be 'Lax', 'Strict', or 'None'. |
+| sso.authorizationServer.enabled | bool | `false` | Enable DHIS2 as an OAuth2/OIDC issuer for other apps; clients must also be registered in DHIS2. |
+| sso.authorizationServer.existingSecret | string | `""` | Secret with keys keystore, password, and key-password. Preferred over chart-managed values. |
+| sso.authorizationServer.keyAlias | string | `""` | Keystore key alias; required when enabled. |
+| sso.authorizationServer.keyPassword | string | `""` | Optional distinct key-entry password (chart-managed Secret only). |
+| sso.authorizationServer.keystoreBase64 | string | `""` | Base64-encoded PKCS12/JKS keystore (chart-managed Secret only); never check into Git. |
+| sso.authorizationServer.password | string | `""` | Keystore password (chart-managed Secret only); never check into Git. |
+| sso.baseUrl | string | `""` | Public HTTPS URL used for OAuth2 issuer metadata. When empty, uses the chart's ingress URL; required when the authorization server is enabled without ingress. |
+| sso.oidc.providers | list | `[]` | External OIDC providers for user login. Provider IDs must be unique lowercase letters, digits, or hyphens (not azure, google, wso2, or dhis2); users must have matching DHIS2 accounts. |
 | startupProbe.failureThreshold | int | `26` | Maximum number of failures. |
 | startupProbe.path | string | `"/"` | Path |
 | startupProbe.periodSeconds | int | `5` | Period between each try |
