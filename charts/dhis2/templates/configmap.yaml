@@ -1,3 +1,4 @@
+{{- include "dhis2-core-helm.ssoValidate" . -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -14,11 +15,50 @@ data:
     connection.url = jdbc:postgresql://${DB_HOSTNAME}/${DB_DATABASE}
     connection.username = ${DB_USERNAME}
     connection.password = ${DB_PASSWORD}
-    {{- if .Values.ingress.enabled }}
-    server.base.url = http{{ if .Values.ingress.certIssuer }}s{{ end }}://{{ .Values.ingress.hostname }}{{ .Values.ingress.path }}
-    server.https = {{ if .Values.ingress.certIssuer }}true{{ else }}false{{ end }}
+    {{- if or .Values.sso.baseUrl .Values.ingress.enabled }}
+    server.base.url = {{ include "dhis2-core-helm.ssoBaseUrl" . }}
+    {{- end }}
+    {{- if or .Values.ingress.enabled .Values.sso.baseUrl }}
+    server.https = {{ if hasPrefix "https://" (include "dhis2-core-helm.ssoBaseUrl" .) }}true{{ else }}false{{ end }}
     {{- end }}
     session.cookie.samesite = {{ .Values.sessionCookieSameSite }}
+    {{- if .Values.sso.authorizationServer.enabled }}
+    oauth2.server.enabled = on
+    oauth2.server.jwt.keystore.path = {{ .Values.dhis2Home }}/oauth2-signing.p12
+    oauth2.server.jwt.keystore.password = ${SSO_KEYSTORE_PASSWORD}
+    oauth2.server.jwt.keystore.alias = {{ .Values.sso.authorizationServer.keyAlias }}
+    oauth2.server.jwt.keystore.key-password = ${SSO_KEY_PASSWORD}
+    oauth2.server.jwt.keystore.generate-if-missing = false
+    {{- end }}
+    {{- range .Values.sso.oidc.providers }}
+    oidc.provider.{{ .id }}.client_id = {{ .clientId }}
+    oidc.provider.{{ .id }}.client_secret = ${SSO_OIDC_{{ .id | upper | replace "-" "_" }}_CLIENT_SECRET}
+    oidc.provider.{{ .id }}.authorization_uri = {{ .authorizationUri }}
+    oidc.provider.{{ .id }}.token_uri = {{ .tokenUri }}
+    oidc.provider.{{ .id }}.user_info_uri = {{ .userInfoUri }}
+    oidc.provider.{{ .id }}.jwk_uri = {{ .jwkUri }}
+    {{- if .mappingClaim }}
+    oidc.provider.{{ .id }}.mapping_claim = {{ .mappingClaim }}
+    {{- end }}
+    {{- if .scopes }}
+    oidc.provider.{{ .id }}.scopes = {{ .scopes }}
+    {{- end }}
+    {{- if .displayAlias }}
+    oidc.provider.{{ .id }}.display_alias = {{ .displayAlias }}
+    {{- end }}
+    {{- if .redirectUrl }}
+    oidc.provider.{{ .id }}.redirect_url = {{ .redirectUrl }}
+    {{- end }}
+    {{- if .enableLogout }}
+    oidc.provider.{{ .id }}.enable_logout = on
+    {{- end }}
+    {{- if .endSessionEndpoint }}
+    oidc.provider.{{ .id }}.end_session_endpoint = {{ .endSessionEndpoint }}
+    {{- end }}
+    {{- if .enablePkce }}
+    oidc.provider.{{ .id }}.enable_pkce = true
+    {{- end }}
+    {{- end }}
     {{- if eq (include "dhis2-core-helm.storageType" .) "minio" }}
     filestore.provider = ${MINIO_PROVIDER}
     filestore.container = ${MINIO_CONTAINER}
