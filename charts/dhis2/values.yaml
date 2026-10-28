@@ -189,7 +189,43 @@ jobs:
 #      - name: Microplanning
 #        version: latest
 
-# Configuration related to Google Auth (optional).
+sso:
+  # -- Public HTTPS URL used for OAuth2 issuer metadata. When empty, uses the chart's ingress URL; required when the authorization server is enabled without ingress.
+  baseUrl: ""
+  oidc:
+    # -- External OIDC providers for user login. Provider IDs must be unique lowercase letters, digits, or hyphens (not azure, google, wso2, or dhis2); users must have matching DHIS2 accounts.
+    providers: []
+    # Example:
+    # - id: company
+    #   clientId: dhis2
+    #   clientSecret: ""          # chart-managed Secret; avoid checking values files into Git
+    #   existingSecret: ""        # alternative: Secret with key client-secret
+    #   authorizationUri: https://idp.example.org/authorize
+    #   tokenUri: https://idp.example.org/token
+    #   userInfoUri: https://idp.example.org/userinfo
+    #   jwkUri: https://idp.example.org/jwks
+    #   mappingClaim: email       # optional; default is email
+    #   scopes: openid            # optional
+    #   displayAlias: Company     # optional
+    #   redirectUrl: ""           # optional; defaults to {baseUrl}/oauth2/code/{registrationId}
+    #   enableLogout: false       # optional
+    #   endSessionEndpoint: ""    # optional
+    #   enablePkce: false         # optional
+  authorizationServer:
+    # -- Enable DHIS2 as an OAuth2/OIDC issuer for other apps; clients must also be registered in DHIS2.
+    enabled: false
+    # -- Keystore key alias; required when enabled.
+    keyAlias: ""
+    # -- Secret with keys keystore, password, and key-password (use the same password twice if the key has no separate password). Preferred over chart-managed values.
+    existingSecret: ""
+    # -- Base64-encoded PKCS12/JKS keystore (chart-managed Secret only); never check into Git.
+    keystoreBase64: ""
+    # -- Keystore password (chart-managed Secret only); never check into Git.
+    password: ""
+    # -- Optional distinct key-entry password (chart-managed Secret only).
+    keyPassword: ""
+
+# Configuration related to Google API service accounts
 googleAuth:
   # -- The unique ID of the Google Cloud Project.
   projectId: ""

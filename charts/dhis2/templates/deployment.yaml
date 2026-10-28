@@ -175,6 +175,27 @@ spec:
                   name: {{ .Values.doris.existingSecret }}
                   key: {{ .Values.doris.secretKeys.password }}
 {{- end }}
+{{- range .Values.sso.oidc.providers }}
+{{- if .existingSecret }}
+            - name: SSO_OIDC_{{ .id | upper | replace "-" "_" }}_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .existingSecret | quote }}
+                  key: client-secret
+{{- end }}
+{{- end }}
+{{- if and .Values.sso.authorizationServer.enabled .Values.sso.authorizationServer.existingSecret }}
+            - name: SSO_KEYSTORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.sso.authorizationServer.existingSecret | quote }}
+                  key: password
+            - name: SSO_KEY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.sso.authorizationServer.existingSecret | quote }}
+                  key: key-password
+{{- end }}
           envFrom:
             - secretRef:
                 name: {{ include "dhis2-core-helm.fullname" . }}
@@ -211,6 +232,12 @@ spec:
             - name: dhis-conf
               mountPath: {{ .Values.dhis2Home }}/dhis.conf
               subPath: dhis.conf
+{{- if .Values.sso.authorizationServer.enabled }}
+            - name: sso-keystore
+              mountPath: {{ .Values.dhis2Home }}/oauth2-signing.p12
+              subPath: keystore
+              readOnly: true
+{{- end }}
 {{- if .Values.googleAuth.projectId }}
             - name: google-auth-json
               mountPath: {{ .Values.dhis2Home }}/dhis-google-auth.json
@@ -254,6 +281,14 @@ spec:
             items:
               - key: dhis.conf
                 path: dhis.conf
+{{- if .Values.sso.authorizationServer.enabled }}
+        - name: sso-keystore
+          secret:
+            secretName: {{ .Values.sso.authorizationServer.existingSecret | default (include "dhis2-core-helm.fullname" .) | quote }}
+            items:
+              - key: keystore
+                path: keystore
+{{- end }}
 {{- if .Values.googleAuth.projectId }}
         - name: google-auth-json
           secret:
