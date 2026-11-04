@@ -175,6 +175,9 @@ spec:
                   name: {{ .Values.doris.existingSecret }}
                   key: {{ .Values.doris.secretKeys.password }}
 {{- end }}
+{{- with .Values.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+{{- end }}
           envFrom:
             - secretRef:
                 name: {{ include "dhis2-core-helm.fullname" . }}

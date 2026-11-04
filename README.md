@@ -16,6 +16,36 @@ If you don't have a cluster available, one can be created using [this](https://g
 
 The CloudNativePG operator must be installed on the cluster before the chart can deploy.
 
+## Single sign-on
+
+DHIS2 can accept login from multiple external OIDC providers. To configure this using the helm chart, use a combination of the `customConfigSnippet`,  `extraEnv`, and if needed `extraVolumes` settings.
+
+For external login, register DHIS2 as a client with each identity provider, configure its authorization, token, user-info and JWKS endpoints, and provision matching DHIS2 user accounts. The default callback is `<baseUrl>/oauth2/code/<provider-id>`; set `redirectUrl` when a different callback is required. For example, create a Secret containing the client credential and configure a provider:
+
+```bash
+kubectl create secret generic company-oidc --from-literal=client-secret='<client secret>'
+```
+
+An example setup could then be:
+```yaml
+customConfigSnippet: |
+  oidc.oauth2.login.enabled = on
+  oidc.provider.company.client_id = dhis2
+  oidc.provider.company.client_secret = ${COMPANY_CLIENT_SECRET}
+  oidc.provider.company.mapping_claim = email
+  oidc.provider.company.authorization_uri = https://company.example.org/connect/authorize
+  oidc.provider.company.token_uri = https://company.example.org/connect/token
+  oidc.provider.company.user_info_uri = https://company.example.org/connect/userinfo
+  oidc.provider.company.jwk_uri = https://company.example.org/.well-known/openid-configuration/jwks
+
+extraEnv:
+  - name: COMPANY_CLIENT_SECRET
+    valueFrom:
+      secretKeyRef: {name: company-oidc, key: client-secret}
+```
+
+More information on SSO configuration is available in the [DHIS2 OIDC documentation](https://docs.dhis2.org/en/manage/reference/openid-connect-oidc.html).
+
 ## Launch
 
 ```bash

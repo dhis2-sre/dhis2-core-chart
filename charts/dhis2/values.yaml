@@ -191,7 +191,7 @@ jobs:
 #      - name: Microplanning
 #        version: latest
 
-# Configuration related to Google Auth (optional).
+# Configuration related to Google API service accounts.
 googleAuth:
   # -- The unique ID of the Google Cloud Project.
   projectId: ""
@@ -294,6 +294,9 @@ extraVolumes: []
 
 # -- Additional Kubernetes volume mounts for the DHIS 2 container. Names must reference pod volumes; mount paths must not conflict with chart-managed mounts.
 extraVolumeMounts: []
+
+# -- Additional environment variables for the DHIS 2 container, using Kubernetes EnvVar definitions with value or valueFrom. Names must not conflict with chart-managed variables.
+extraEnv: []
 
 # -- DHIS 2 home directory.
 dhis2Home: /opt/dhis2
