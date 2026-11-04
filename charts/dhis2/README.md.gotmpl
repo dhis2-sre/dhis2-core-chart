@@ -14,6 +14,28 @@
 
 {{ template "chart.requirementsSection" . }}
 
+## Additional Environment Variables
+
+Use `extraEnv` to add environment variables to the main DHIS 2 container.
+Entries accept native Kubernetes `EnvVar` definitions with `value` or `valueFrom`:
+
+```yaml
+extraEnv:
+  - name: CUSTOM_SETTING
+    value: "true"
+  - name: CUSTOM_CLIENT_SECRET
+    valueFrom:
+      secretKeyRef:
+        name: existing-client-credentials
+        key: client-secret
+```
+
+ConfigMap references and downward API `fieldRef` entries are also supported.
+Referenced Secrets and ConfigMaps must already exist in the release's namespace.
+Use unique names that do not conflict with chart-managed environment variables.
+These entries are not applied to init containers or jobs. Use Secret references
+for credentials rather than storing literal secrets in Helm values.
+
 ## Additional Volumes
 
 Use `extraVolumes` and `extraVolumeMounts` to mount existing PVCs, Secrets or
