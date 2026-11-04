@@ -238,6 +238,9 @@ spec:
               mountPath: /glowroot-data
               readOnly: false
             {{- end }}
+            {{- with .Values.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
@@ -290,6 +293,9 @@ spec:
             name: {{ include "dhis2-core-helm.fullname" . }}-glowroot
         - name: glowroot-data
           emptyDir: {}
+        {{- end }}
+        {{- with .Values.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
         {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
